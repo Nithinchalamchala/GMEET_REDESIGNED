@@ -137,8 +137,10 @@
         </div>
 
         <div class="onboarding-actions">
-            <button class="btn-secondary" onclick="skipOnboardingWizard()">Skip tips</button>
-            <button class="btn-primary-action" id="onboardingNextBtn" onclick="nextOnboardingTip()">Next tip →</button>
+            <!-- Directly join skips dashboard and goes to meeting -->
+            <button class="btn-secondary" onclick="window.location.href='meeting.html'">Directly Join</button>
+            <button class="btn-secondary" onclick="skipOnboardingWizard()">Dashboard</button>
+            <button class="btn-primary-action" id="onboardingNextBtn" onclick="nextOnboardingTip()">See next tip →</button>
         </div>
 
         <!-- Commitment progress -->

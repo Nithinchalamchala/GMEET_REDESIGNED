@@ -105,6 +105,9 @@ function joinMeeting() {
     // Start meeting timer
     state.meetingStartTime = Date.now();
     state.timerInterval = setInterval(updateTimer, 1000);
+      
+      startAssistantTimeout();
+
 
     // Start network quality simulation
     startNetworkSimulation();
@@ -618,6 +621,9 @@ function rejoinMeeting() {
 
   state.meetingStartTime = Date.now();
   state.timerInterval = setInterval(updateTimer, 1000);
+      
+      startAssistantTimeout();
+
 }
 
 function goHome() {
@@ -1611,12 +1617,17 @@ console.log(' ☕ Break Reminder (Persuasive Design, Nudge Theory)');
 // MEETING ASSISTANT (Liking & Reciprocity)
 // ============================
 let assistantMuted = false;
-setTimeout(() => {
-  const assistant = document.getElementById('meetingAssistant');
-  if (assistant && !state.isMuted) {
-    assistant.style.display = 'flex';
-  }
-}, 45000); // Popup after 45s if they haven't muted
+let assistantTimeoutId;
+function startAssistantTimeout() {
+  if (assistantTimeoutId) clearTimeout(assistantTimeoutId);
+  assistantTimeoutId = setTimeout(() => {
+    const assistant = document.getElementById("meetingAssistant");
+    if (assistant && !state.isMuted) {
+      assistant.style.display = "flex";
+    }
+  }, 45000);
+}
+
 
 function closeAssistant() {
   document.getElementById('meetingAssistant').style.display = 'none';
