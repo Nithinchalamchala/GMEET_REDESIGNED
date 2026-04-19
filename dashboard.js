@@ -293,7 +293,7 @@ function finalizeJoin() {
     document.querySelector('.progress-step:last-child').classList.add('completed');
     
     setTimeout(() => {
-        window.location.href = "index.html"; 
+        window.location.href = "meeting.html"; 
     }, 500);
 }
 

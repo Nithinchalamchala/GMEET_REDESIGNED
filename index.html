@@ -3,1322 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Meet Redesign — HCI Interactive Prototype</title>
-    <meta name="description" content="Interactive HCI prototype of Google Meet redesign demonstrating Shneiderman's rules, Nielsen heuristics, Fitts's Law, and more.">
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Google Meet Next — Smart Dashboard</title>
+    <meta name="description" content="Persuasion psychology-driven meeting dashboard with trust-building onboarding and smart conversion.">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
 </head>
-<body>
+<body class="dashboard-body">
 
 <!-- ============================================================
-     SCREEN 1: PRE-JOIN LOBBY
-     HCI: Error Prevention (Nielsen #5), System Status (Nielsen #1),
-           Mental Models, Closure, Tesler's Law (smart defaults)
+     SCREEN 0: ROLE SELECTOR (Commitment & Consistency)
+     HCI: Micro-commitment — small choice → bigger engagement
+     Psychology: Commitment & Consistency (Cialdini)
      ============================================================ -->
-<div class="pre-join-screen" id="preJoinScreen">
-    <div class="pre-join-card">
-        <!-- Camera Preview -->
-        <div class="pre-join-preview">
-            <div class="camera-preview-box" id="cameraPreview">
-                <div class="avatar-large avatar-color-0" id="previewAvatar">AN</div>
-            </div>
-            <div class="preview-controls">
-                <button class="preview-toggle-btn" id="previewMicBtn" title="Toggle microphone" aria-label="Toggle microphone">
-                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                </button>
-                <button class="preview-toggle-btn" id="previewVideoBtn" title="Toggle camera" aria-label="Toggle camera">
-                    <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- Meeting Info & System Check -->
-        <div class="pre-join-info">
-            <h1>Ready to join?</h1>
-            <div class="pre-join-meeting-code">
-                <span>abc-defg-hij</span>
-                <button class="copy-btn" title="Copy meeting code" aria-label="Copy meeting code">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                </button>
-            </div>
-
-            <div class="system-check-list" id="systemCheckList">
-                <div class="check-row" id="checkMic">
-                    <div class="check-icon pending">—</div>
-                    <span class="check-label">Microphone</span>
-                    <span class="check-status">Waiting...</span>
-                </div>
-                <div class="check-row" id="checkCamera">
-                    <div class="check-icon pending">—</div>
-                    <span class="check-label">Camera</span>
-                    <span class="check-status">Waiting...</span>
-                </div>
-                <div class="check-row" id="checkSpeaker">
-                    <div class="check-icon pending">—</div>
-                    <span class="check-label">Speaker</span>
-                    <span class="check-status">Waiting...</span>
-                </div>
-                <div class="check-row" id="checkNetwork">
-                    <div class="check-icon pending">—</div>
-                    <span class="check-label">Network</span>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <span class="check-status" id="networkSpeed">Checking...</span>
-                        <div class="network-quality-bar" id="preNetworkBars">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pre-join-actions">
-                <button class="btn-retest" id="retestBtn" onclick="runSystemCheck()">Test Again</button>
-                <button class="btn-join" id="joinBtn" onclick="joinMeeting()">Join now</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     SCREEN 2: MAIN MEETING INTERFACE
-     HCI: Visibility (Norman), Gestalt Laws, Miller's Law, Fitts's Law,
-           Shneiderman #1 (Consistency), #3 (Feedback), #8 (Reduce memory)
-     ============================================================ -->
-<div class="meeting-screen" id="meetingScreen">
-    <!-- Header -->
-    <header class="meeting-header" role="banner">
-        <div class="header-left">
-            <a href="dashboard.html" class="google-meet-logo" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                <img src="LOGO_CONVERGE.png" alt="Converge Logo" style="width: 28px; height: 28px;">
-                <span class="meeting-title" style="color:var(--text-primary); font-weight: 500;">Converge</span>
+<div class="role-screen" id="roleScreen">
+    <div class="role-card">
+        <div class="role-header">
+            <a href="index.html" class="google-meet-logo" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                <img src="LOGO_CONVERGE.png" alt="Converge Logo" style="width: 36px; height: 36px;">
+                <span style="color:var(--text-primary); font-size: 22px; font-weight: 500;">Converge</span>
             </a>
-            <span class="meeting-timer" id="meetingTimer" aria-live="polite">00:00</span>
+            <h1>Welcome! How will you use Meet today?</h1>
+            <p class="role-subtitle">We'll personalize your experience based on your role.</p>
         </div>
-        <div class="header-center">
-            <div class="recording-badge" id="recordingBadge" role="status" aria-label="Recording status">
-                <div class="recording-dot"></div>
-                <span>Recording</span>
-            </div>
+
+        <!-- Step indicator (Commitment — shows progress) -->
+        <div class="commitment-progress">
+            <div class="progress-step active"><span>1</span><label>Your Role</label></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><span>2</span><label>Quick Setup</label></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><span>3</span><label>Join Meeting</label></div>
         </div>
-        <div class="header-right">
-            <!-- Network Quality Indicator - HCI: System Status (Nielsen #1), Robustness -->
-            <div class="network-indicator good" id="networkIndicator" title="Network quality" onclick="toggleNetworkDetails()">
-                <div class="network-quality-bar" id="headerNetworkBars">
-                    <div class="bar active"></div>
-                    <div class="bar active"></div>
-                    <div class="bar active"></div>
-                    <div class="bar active"></div>
-                    <div class="bar active"></div>
+
+        <div class="role-options">
+            <!-- Student -->
+            <button class="role-option" onclick="selectRole('student')">
+                <div class="role-icon">🎓</div>
+                <h3>Student</h3>
+                <p>Attending classes, study groups, presentations</p>
+                <!-- Social Proof -->
+                <div class="role-social-proof">
+                    <div class="avatar-stack">
+                        <div class="mini-avatar avatar-color-0">AN</div>
+                        <div class="mini-avatar avatar-color-2">RK</div>
+                        <div class="mini-avatar avatar-color-3">PS</div>
+                    </div>
+                    <span>847 students active today</span>
                 </div>
-                <span class="label" id="networkLabel">Good</span>
-            </div>
-            <!-- Captions toggle - HCI: Accessibility, Flexibility -->
-            <button class="header-icon-btn" id="captionsBtn" title="Toggle captions (C)" aria-label="Toggle captions" onclick="toggleCaptions()">
-                <svg viewBox="0 0 24 24"><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1c0 .55-.45 1-1 1h-3c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1z"/></svg>
             </button>
-            <!-- Settings - HCI: User Control (Nielsen #3), Flexibility -->
-            <button class="header-icon-btn" id="settingsOpenBtn" title="Settings" aria-label="Open settings" onclick="openSettings()">
-                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            <!-- Teacher -->
+            <button class="role-option" onclick="selectRole('teacher')">
+                <div class="role-icon">👩‍🏫</div>
+                <h3>Teacher</h3>
+                <p>Hosting lectures, managing classes, grading</p>
+                <div class="role-social-proof">
+                    <div class="avatar-stack">
+                        <div class="mini-avatar avatar-color-1">BS</div>
+                        <div class="mini-avatar avatar-color-5">DK</div>
+                    </div>
+                    <span>124 educators online</span>
+                </div>
             </button>
-            <!-- Help - HCI: Help & Documentation (Nielsen #10) -->
-            <button class="header-icon-btn" title="Help (Shift+?)" aria-label="Open help" onclick="openShortcuts()">
-                <svg viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
-            </button>
-        </div>
-    </header>
-
-    <!-- Mute Banner - HCI: Feedback (Shneiderman #3), Visibility, Error Prevention -->
-    <div class="mute-banner" id="muteBanner" role="alert" aria-live="assertive">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-        <span>You are muted</span>
-        <span class="unmute-hint">Press <kbd>Space</kbd> to unmute</span>
-    </div>
-
-    <!-- Screen Share Banner - HCI: Feedback, System Status -->
-    <div class="screen-share-banner" id="screenShareBanner">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
-        <span>You are presenting to everyone</span>
-        <button class="stop-share-btn" onclick="toggleScreenShare()">Stop presenting</button>
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="meeting-content">
-        <!-- View Toggle - HCI: Flexibility, User Control -->
-        <div class="view-toggle" id="viewToggle" style="width:auto;">
-            <button class="active" id="gridViewBtn" onclick="setView('grid')" title="Grid view">
-                <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z"/></svg>
-                Grid
-            </button>
-            <button id="speakerViewBtn" onclick="setView('speaker')" title="Speaker view">
-                <svg viewBox="0 0 24 24"><path d="M3 3h12v12H3V3zm14 0h4v4h-4V3zm0 6h4v4h-4V9zm0 6h4v4h-4v-4zM3 17h12v4H3v-4z"/></svg>
-                Speaker
-            </button>
-            <button id="spatialViewBtn" onclick="setView('spatial')" title="Spatial Canvas">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
-                Spatial
+            <!-- Professional -->
+            <button class="role-option" onclick="selectRole('professional')">
+                <div class="role-icon">💼</div>
+                <h3>Professional</h3>
+                <p>Team standups, client calls, presentations</p>
+                <div class="role-social-proof">
+                    <div class="avatar-stack">
+                        <div class="mini-avatar avatar-color-4">TM</div>
+                        <div class="mini-avatar avatar-color-5">JD</div>
+                        <div class="mini-avatar avatar-color-0">AL</div>
+                    </div>
+                    <span>2.3K professionals in meetings</span>
+                </div>
             </button>
         </div>
 
-        <!-- Video Grid Area -->
-        <div class="video-area" id="videoArea">
-            <div class="video-grid grid-4" id="videoGrid">
-
-                <!-- Tile: You (Local) -->
-                <div class="video-tile" id="localTile" data-participant="you" aria-label="Your video">
-                    <div class="tile-content">
-                        <div class="avatar-circle avatar-color-0">AN</div>
-                        <div class="screen-share-overlay" id="localShareOverlay">
-                            <div class="share-content">
-                                <svg viewBox="0 0 24 24"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
-                                <p>You are presenting</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tile-name">
-                        <span class="mic-status" id="localMicIcon">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                        </span>
-                        <span>You</span>
-                        <!-- Anti-Fatigue Collapse Button -->
-                        <button id="btnCollapseSelf" onclick="toggleSelfView()" aria-label="Minimize self view" title="Hide Self View (Reduce Fatigue)">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
-                        </button>
-                    </div>
-                    <div class="tile-hand-raised" id="localHandRaised">✋</div>
-                    <div class="tile-pin" id="localPin">
-                        <svg viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
-                    </div>
-                    <div class="tile-actions">
-                        <button class="tile-action-btn" title="Pin" onclick="togglePin('you')">
-                            <svg viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Tile: Prof. Sivaselvan -->
-                <div class="video-tile speaking" id="tile-prof" data-participant="prof" aria-label="Prof. Sivaselvan's video">
-                    <div class="tile-content">
-                        <div class="avatar-circle avatar-color-1">BS</div>
-                    </div>
-                    <div class="tile-name">
-                        <span class="mic-status">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                        </span>
-                        <span>Prof. Sivaselvan</span>
-                    </div>
-                    <div class="tile-hand-raised">✋</div>
-                    <div class="tile-pin">
-                        <svg viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
-                    </div>
-                    <div class="tile-actions">
-                        <button class="tile-action-btn" title="Pin" onclick="togglePin('prof')">
-                            <svg viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Tile: Rahul K -->
-                <div class="video-tile" id="tile-rahul" data-participant="rahul" aria-label="Rahul K's video">
-                    <div class="tile-content">
-                        <div class="avatar-circle avatar-color-2">RK</div>
-                    </div>
-                    <div class="tile-name">
-                        <span class="mic-status muted">
-                            <svg viewBox="0 0 24 24"><path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.55-.9l4.17 4.18L21 19.73 4.27 3z"/></svg>
-                        </span>
-                        <span>Rahul K</span>
-                    </div>
-                    <div class="tile-hand-raised" id="rahulHand">✋</div>
-                    <div class="tile-pin">
-                        <svg viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
-                    </div>
-                    <div class="tile-actions">
-                        <button class="tile-action-btn" title="Pin" onclick="togglePin('rahul')">
-                            <svg viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Tile: Priya S -->
-                <div class="video-tile" id="tile-priya" data-participant="priya" aria-label="Priya S's video">
-                    <div class="tile-content">
-                        <div class="avatar-circle avatar-color-3">PS</div>
-                    </div>
-                    <div class="tile-name">
-                        <span class="mic-status">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                        </span>
-                        <span>Priya S</span>
-                    </div>
-                    <div class="tile-hand-raised">✋</div>
-                    <div class="tile-pin">
-                        <svg viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
-                    </div>
-                    <div class="tile-actions">
-                        <button class="tile-action-btn" title="Pin" onclick="togglePin('priya')">
-                            <svg viewBox="0 0 24 24"><path d="M14 4v5c0 1.12.37 2.16 1 3H9c.65-.86 1-1.9 1-3V4h4m3-2H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3V4h1c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
-                        </button>
-                    </div>
-                </div>
-
+        <!-- Authority badge -->
+        <div class="authority-badge-row">
+            <div class="authority-badge">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="#4285F4"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                <span>Trusted by 5M+ users worldwide</span>
             </div>
-        </div>
-
-        <!-- Side Panel (Chat / Participants) -->
-        <!-- HCI: Recognition vs Recall (Nielsen #6), Consistency, Learnability -->
-        <div class="side-panel" id="sidePanel">
-            <!-- Chat Panel -->
-            <div id="chatPanel" style="display:none;flex-direction:column;height:100%;">
-                <div class="panel-header">
-                    <h2>In-call messages</h2>
-                    <button class="panel-close-btn" onclick="closePanel()" aria-label="Close chat">
-                        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                    </button>
-                </div>
-                <div class="chat-messages" id="chatMessages">
-                    <!-- Pre-populated messages -->
-                    <div class="chat-message">
-                        <div class="msg-header">
-                            <div class="msg-avatar avatar-color-1">BS</div>
-                            <span class="msg-name">Prof. Sivaselvan</span>
-                            <span class="msg-time">2:30 PM</span>
-                        </div>
-                        <div class="msg-text">Welcome everyone. Today we'll discuss HCI design principles.</div>
-                    </div>
-                    <div class="chat-message">
-                        <div class="msg-header">
-                            <div class="msg-avatar avatar-color-2">RK</div>
-                            <span class="msg-name">Rahul K</span>
-                            <span class="msg-time">2:31 PM</span>
-                        </div>
-                        <div class="msg-text">Can you share the slides?</div>
-                    </div>
-                    <div class="chat-message">
-                        <div class="msg-header">
-                            <div class="msg-avatar avatar-color-1">BS</div>
-                            <span class="msg-name">Prof. Sivaselvan</span>
-                            <span class="msg-time">2:31 PM</span>
-                        </div>
-                        <div class="msg-text">Sure, let me share my screen now.</div>
-                    </div>
-                </div>
-                <div class="chat-input-area">
-                    <div class="chat-input-wrapper">
-                        <input type="text" id="chatInput" placeholder="Send a message to everyone" aria-label="Chat message input" autocomplete="off">
-                        <button class="chat-send-btn" onclick="sendChatMessage()" aria-label="Send message">
-                            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Participants Panel -->
-            <!-- HCI: Information Architecture, Hick's Law, Robustness -->
-            <div id="participantsPanel" style="display:none;flex-direction:column;height:100%;">
-                <div class="panel-header">
-                    <h2>People (<span id="participantCount">4</span>)</h2>
-                    <button class="panel-close-btn" onclick="closePanel()" aria-label="Close participants">
-                        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                    </button>
-                </div>
-                <div class="participants-count">In this call</div>
-                <div class="participants-list" id="participantsList">
-                    <div class="participant-row">
-                        <div class="p-avatar avatar-color-0">AN</div>
-                        <div class="p-info">
-                            <div class="p-name">You (Anjani Nithin)</div>
-                            <div class="p-role">Participant</div>
-                        </div>
-                        <div class="p-status">
-                            <div class="status-icon" id="pListLocalMic">
-                                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                            </div>
-                            <div class="status-icon">
-                                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="participant-row">
-                        <div class="p-avatar avatar-color-1">BS</div>
-                        <div class="p-info">
-                            <div class="p-name">Prof. Sivaselvan</div>
-                            <div class="p-role">Host</div>
-                        </div>
-                        <div class="p-status">
-                            <div class="status-icon">
-                                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                            </div>
-                            <div class="status-icon">
-                                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="participant-row">
-                        <div class="p-avatar avatar-color-2">RK</div>
-                        <div class="p-info">
-                            <div class="p-name">Rahul K</div>
-                            <div class="p-role">Participant</div>
-                        </div>
-                        <div class="p-status">
-                            <div class="status-icon muted">
-                                <svg viewBox="0 0 24 24"><path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.55-.9l4.17 4.18L21 19.73 4.27 3z"/></svg>
-                            </div>
-                            <div class="status-icon">
-                                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="participant-row">
-                        <div class="p-avatar avatar-color-3">PS</div>
-                        <div class="p-info">
-                            <div class="p-name">Priya S</div>
-                            <div class="p-role">Participant</div>
-                        </div>
-                        <div class="p-status">
-                            <div class="status-icon">
-                                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                            </div>
-                            <div class="status-icon">
-                                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Notes Panel -->
-            <!-- HCI: External Memory Aid (Miller's Law), Closure, Flexibility -->
-            <div id="notesPanelInner" style="display:none;flex-direction:column;height:100%;">
-                <div class="panel-header">
-                    <h2>Meeting Notes</h2>
-                    <button class="panel-close-btn" onclick="closePanel()" aria-label="Close notes">
-                        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                    </button>
-                </div>
-                <div class="notes-toolbar">
-                    <button class="notes-tool-btn" onclick="formatNote('bold')" title="Bold"><b>B</b></button>
-                    <button class="notes-tool-btn" onclick="formatNote('italic')" title="Italic"><i>I</i></button>
-                    <button class="notes-tool-btn" onclick="formatNote('bullet')" title="Bullet list">•</button>
-                    <div class="notes-autosave">
-                        <span class="autosave-dot"></span>
-                        <span>Auto-saved</span>
-                    </div>
-                </div>
-                <div class="notes-content" id="notesContent" contenteditable="true" aria-label="Meeting notes editor">
-                    <p><strong>HCI Class Discussion</strong></p>
-                    <p>📅 Meeting Notes — Auto-saved</p>
-                    <p><br></p>
-                </div>
-                <div class="notes-footer">
-                    <button class="btn-export-notes" onclick="exportNotes()">📥 Export Notes</button>
-                    <span class="notes-word-count" id="notesWordCount">0 words</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================================
-         CONTROL BAR (Bottom)
-         HCI: Shneiderman #8 (Reduce memory), Fitts's Law (large targets),
-              Miller's Law (7±2), Gestalt Proximity, Primacy/Recency Effect,
-              Hick's Law, Pareto 80/20, Color Coding (Visual Hierarchy)
-         ======================================================== -->
-    <div class="control-bar" role="toolbar" aria-label="Meeting controls">
-        <div class="control-bar-inner">
-
-            <!-- PRIMARY GROUP: Mute + Video (Primacy — most used, placed first) -->
-            <!-- Fitts's Law: Larger buttons for frequent actions -->
-            <button class="ctrl-btn primary mute-btn" id="muteBtn" onclick="toggleMute()" aria-label="Toggle microphone" title="Toggle microphone">
-                <span class="shortcut-hint">Space</span>
-                <span class="ctrl-icon" id="muteIcon">
-                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                </span>
-                <span class="ctrl-label" id="muteLabel">Mic</span>
-            </button>
-
-            <button class="ctrl-btn primary video-btn" id="videoBtn" onclick="toggleVideo()" aria-label="Toggle camera" title="Toggle camera">
-                <span class="shortcut-hint">Ctrl+E</span>
-                <span class="ctrl-icon" id="videoIcon">
-                    <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                </span>
-                <span class="ctrl-label" id="videoLabel">Camera</span>
-            </button>
-
-            <div class="control-divider"></div>
-
-            <!-- COLLABORATIVE GROUP: Share Screen (Green = collaborative) -->
-            <button class="ctrl-btn share-btn" id="shareBtn" onclick="toggleScreenShare()" aria-label="Share screen" title="Share screen">
-                <span class="shortcut-hint">Ctrl+D</span>
-                <span class="ctrl-icon">
-                    <svg viewBox="0 0 24 24"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
-                </span>
-                <span class="ctrl-label" id="shareLabel">Present</span>
-            </button>
-
-            <!-- Reactions (Emotional Design — Norman) -->
-            <div style="position:relative;">
-                <button class="ctrl-btn reactions-btn" id="reactionsBtn" onclick="toggleReactions()" aria-label="Reactions" title="Send a reaction">
-                    <span class="ctrl-icon">
-                        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-                    </span>
-                    <span class="ctrl-label">React</span>
-                </button>
-                <!-- Reactions Popup Menu -->
-                <div class="reactions-menu" id="reactionsMenu">
-                    <button class="reaction-btn" onclick="sendReaction('👍')" title="Thumbs up">👍</button>
-                    <button class="reaction-btn" onclick="sendReaction('❤️')" title="Heart">❤️</button>
-                    <button class="reaction-btn" onclick="sendReaction('😂')" title="Joy">😂</button>
-                    <button class="reaction-btn" onclick="sendReaction('😮')" title="Surprised">😮</button>
-                    <button class="reaction-btn" onclick="sendReaction('👏')" title="Clap">👏</button>
-                    <button class="reaction-btn" onclick="sendReaction('🎉')" title="Celebrate">🎉</button>
-                </div>
-            </div>
-
-            <!-- Hand Raise -->
-            <button class="ctrl-btn hand-btn" id="handBtn" onclick="toggleHandRaise()" aria-label="Raise hand" title="Raise hand">
-                <span class="ctrl-icon">
-                    <svg viewBox="0 0 24 24"><path d="M21 7c0-1.38-1.12-2.5-2.5-2.5-.17 0-.34.02-.5.05V4c0-1.38-1.12-2.5-2.5-2.5-.23 0-.46.03-.67.09C14.46.66 13.56 0 12.5 0c-1.23 0-2.25.89-2.46 2.06C9.87 2.02 9.69 2 9.5 2 8.12 2 7 3.12 7 4.5v5.89c-.34-.31-.76-.51-1.22-.51-.83 0-1.5.67-1.5 1.5 0 .21.05.41.13.6l3.14 7.83C8.16 21.48 9.85 23 12 23h5.5C19.98 23 22 20.99 22 18.5V9c0-1.11-.74-2.05-1.76-2.36C20.72 6.26 21 5.66 21 5v2zm-2 11.5c0 1.38-1.12 2.5-2.5 2.5H12c-1.06 0-2-.72-2.32-1.73l-3.07-7.63c-.01-.02-.01-.04-.01-.07 0-.08.03-.14.07-.19.04-.05.1-.08.17-.08.08 0 .16.04.22.11L9 13.42V4.5c0-.28.22-.5.5-.5s.5.22.5.5V10h2V2.5c0-.28.22-.5.5-.5s.5.22.5.5V10h2V4c0-.28.22-.5.5-.5s.5.22.5.5v6.5h2V5c0-.28.22-.5.5-.5s.5.22.5.5v4c0 .28.22.5.5.5s.5-.22.5-.5V7c0-.28.22-.5.5-.5s.5.22.5.5v11.5z"/></svg>
-                </span>
-                <span class="ctrl-label" id="handLabel">Raise</span>
-            </button>
-
-            <div class="control-divider"></div>
-
-            <!-- SECONDARY GROUP: People, Chat, More (secondary actions) -->
-            <!-- HCI: Gestalt Proximity – grouped together -->
-            <button class="ctrl-btn" id="peopleBtn" onclick="togglePeople()" aria-label="Show participants" title="People">
-                <span class="badge" id="peopleBadge">4</span>
-                <span class="ctrl-icon">
-                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                </span>
-                <span class="ctrl-label">People</span>
-            </button>
-
-
-
-            <div style="position:relative;">
-                <button class="ctrl-btn" id="moreBtn" onclick="toggleMoreMenu()" aria-label="More options" title="More options">
-                    <span class="ctrl-icon">
-                        <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                    </span>
-                    <span class="ctrl-label">More</span>
-                </button>
-                <!-- More Options Dropdown Menu -->
-                <div class="more-menu" id="moreMenu">
-                    <button class="more-menu-item" id="chatBtn" onclick="toggleChat(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-                        <span>Chat</span>
-                    </button>
-                    <button class="more-menu-item" id="infoBtn" onclick="toggleInfoPanel(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                        <span>Meeting Info</span>
-                    </button>
-                    <button class="more-menu-item" id="notesBtn" onclick="toggleNotes(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                        <span>Meeting Notes</span>
-                    </button>
-                    <div class="menu-divider" style="height:1px; background:rgba(255,255,255,0.1); margin:4px 0;"></div>
-                    <button class="more-menu-item" onclick="toggleMore(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                        <span>Toggle Recording</span>
-                    </button>
-                    <button class="more-menu-item" onclick="openBreakoutRooms(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
-                        <span>Breakout Rooms</span>
-                    </button>
-                    <button class="more-menu-item" onclick="openPoll(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                        <span>Launch Poll</span>
-                    </button>
-                    <button class="more-menu-item" onclick="openBgPicker(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                        <span>Virtual Background</span>
-                    </button>
-                    <button class="more-menu-item" onclick="toggleFocusMode(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                        <span>Focus Mode</span>
-                    </button>
-                    <!-- ACCESSIBILITY Section -->
-                    <div class="menu-divider" style="height:1px; background:rgba(255,255,255,0.1); margin:4px 0;"></div>
-                    <button class="more-menu-item" onclick="toggleMotorAssist(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M11 2v4.26a6 6 0 0 0-4.06 2.37l-1.92-1.92a7.94 7.94 0 0 1 3.51-2.45V2h-3v2h8V2h-3zm-6.2 9.08L2.88 9.16a7.94 7.94 0 0 1 2.45-3.51l1.92 1.92a6 6 0 0 0-2.45 3.51zm9.4 0A6 6 0 0 0 11.75 7.6l1.92-1.93a7.95 7.95 0 0 1 2.45 3.52l-1.92 1.89zm-2.8 1.48v2.09c0 .76-.62 1.38-1.39 1.38s-1.38-.62-1.38-1.38v-2.09a3.02 3.02 0 0 1 2.77 0z"/></svg>
-                        <span>Accessibility: Motor-Assist Tracker</span>
-                    </button>
-                    <button class="more-menu-item" onclick="toggleHighContrast(); closeMoreMenu();">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                        <span>Accessibility: High-Contrast Mode</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="control-divider"></div>
-
-            <!-- DESTRUCTIVE: Leave (Recency — placed last, red = danger) -->
-            <!-- HCI: Error Prevention (Nielsen #5), Shneiderman #5, Color Coding -->
-            <button class="ctrl-btn leave-btn" id="leaveBtn" onclick="attemptLeave()" aria-label="Leave meeting" title="Leave meeting">
-                <span class="ctrl-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
-                </span>
-                <span class="ctrl-label">Leave</span>
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     LEAVE CONFIRMATION MODAL
-     HCI: Error Prevention (Nielsen #5), Shneiderman #4 (Closure),
-           Shneiderman #5 (Error Prevention), Asimov's Laws (protect user)
-     ============================================================ -->
-<div class="modal-overlay leave-modal" id="leaveModal">
-    <div class="modal-card">
-        <div class="modal-card-body">
-            <div class="leave-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
-            </div>
-            <h3>Leave meeting?</h3>
-            <p>Are you sure you want to leave? You can rejoin anytime.</p>
-            <div class="leave-actions">
-                <!-- Primary: Stay (larger, blue) — Fitts's Law: safe option is bigger -->
-                <button class="btn-stay" onclick="cancelLeave()">Stay in meeting</button>
-                <!-- Secondary: Leave (smaller, outlined) -->
-                <button class="btn-leave-confirm" onclick="confirmLeave()">Leave meeting</button>
+            <div class="authority-badge">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="#34A853"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                <span>End-to-end encrypted</span>
             </div>
         </div>
     </div>
 </div>
 
 <!-- ============================================================
-     SETTINGS MODAL
-     HCI: User Control & Freedom (Nielsen #3), Flexibility,
-           Tesler's Law (complexity managed via smart defaults)
+     SCREEN 1: ONBOARDING WIZARD (Reciprocity + Trust Building)
+     HCI: Progressive Disclosure, Reciprocity (give tips before asking)
+     Psychology: Reciprocity (Cialdini), Liking (friendly tone)
      ============================================================ -->
-<div class="modal-overlay settings-modal" id="settingsModal">
-    <div class="modal-card">
-        <div class="modal-card-header">
-            <div>
-                <h2>Settings</h2>
-                <!-- HCI: Navigation Design Guidelines (Breadcrumbs) -->
-                <div class="breadcrumb" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 4px;">Meeting &gt; Settings &gt; <span id="settingBreadcrumb">Audio</span></div>
-            </div>
-            <button class="panel-close-btn" onclick="closeSettings()" aria-label="Close settings">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
+<div class="onboarding-screen" id="onboardingScreen" style="display:none;">
+    <div class="onboarding-card">
+        <div class="onboarding-header">
+            <div class="onboarding-avatar" id="onboardingAvatar">🎓</div>
+            <h2 id="onboardingGreeting">Welcome, Student!</h2>
+            <p class="onboarding-sub" id="onboardingSub">Here are some free tips to make your meetings better. No strings attached!</p>
         </div>
-        <div class="settings-layout">
-            <div class="settings-nav">
-                <button class="settings-nav-btn active" onclick="showSettingsTab(this,'audio')" data-tab="audio">
-                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                    Audio
-                </button>
-                <button class="settings-nav-btn" onclick="showSettingsTab(this,'video')" data-tab="video">
-                    <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                    Video
-                </button>
-                <button class="settings-nav-btn" onclick="showSettingsTab(this,'general')" data-tab="general">
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                    General
-                </button>
-                <button class="settings-nav-btn" onclick="showSettingsTab(this,'accessibility')" data-tab="accessibility">
-                    <svg viewBox="0 0 24 24"><path d="M20.5 6c-2.61.7-5.67 1-8.5 1s-5.89-.3-8.5-1L3 8c1.86.5 4 .83 6 1v13h2v-6h2v6h2V9c2-.17 4.14-.5 6-1l-.5-2zM12 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
-                    Accessibility
-                </button>
+
+        <!-- Reciprocity: Free tips given BEFORE asking for anything -->
+        <div class="onboarding-tips" id="onboardingTips">
+            <div class="tip-card visible" id="tip-1">
+                <div class="tip-icon">🎤</div>
+                <h4>Pro Tip: Mute with Space</h4>
+                <p>Press the spacebar to quickly mute/unmute. 3x faster than clicking!</p>
+                <div class="tip-tag reciprocity-tag">🎁 Free tip — just for you</div>
             </div>
-            <div class="settings-panel-content" id="settingsContent">
-                <!-- Audio Tab -->
-                <div class="settings-tab-content" id="settingsAudio">
-                    <h3>Audio</h3>
-                    <div class="setting-group">
-                        <label for="micSelect">Microphone</label>
-                        <select id="micSelect">
-                            <option>Default — Built-in Microphone</option>
-                            <option>External USB Microphone</option>
-                        </select>
+            <div class="tip-card" id="tip-2">
+                <div class="tip-icon">📝</div>
+                <h4>Pro Tip: Take Notes In-Meeting</h4>
+                <p>Click the Notes button to write & export meeting notes without leaving the call.</p>
+                <div class="tip-tag reciprocity-tag">🎁 Another free one!</div>
+            </div>
+            <div class="tip-card" id="tip-3">
+                <div class="tip-icon">🎯</div>
+                <h4>Pro Tip: Focus Mode</h4>
+                <p>Use Focus Mode to dim distractions and highlight only the speaker. Great for lectures!</p>
+                <div class="tip-tag reciprocity-tag">🎁 You're getting the VIP treatment</div>
+            </div>
+        </div>
+
+        <!-- Progress dots -->
+        <div class="onboarding-dots">
+            <div class="dot active" data-tip="1"></div>
+            <div class="dot" data-tip="2"></div>
+            <div class="dot" data-tip="3"></div>
+        </div>
+
+        <div class="onboarding-actions">
+            <button class="btn-secondary" onclick="skipOnboardingWizard()">Skip tips</button>
+            <button class="btn-primary-action" id="onboardingNextBtn" onclick="nextOnboardingTip()">Next tip →</button>
+        </div>
+
+        <!-- Commitment progress -->
+        <div class="commitment-progress compact">
+            <div class="progress-step completed"><span>✓</span><label>Your Role</label></div>
+            <div class="progress-line filled"></div>
+            <div class="progress-step active"><span>2</span><label>Quick Setup</label></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><span>3</span><label>Join Meeting</label></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 2: MAIN DASHBOARD
+     HCI: Gestalt Symmetry, Information Architecture
+     Psychology: Social Proof, Scarcity, Authority, Liking
+     ============================================================ -->
+<div class="dashboard-main" id="dashboardMain" style="display:none;">
+
+    <!-- Scarcity + Authority top banner -->
+    <div class="persuasion-banner" role="alert" id="persuasionBanner">
+        <div class="banner-left">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <span id="bannerText"><strong>Urgent:</strong> Prof. Sivaselvan requested your presence. <span class="social-proof-inline" id="lobbyCount">14 other students</span> are already waiting.</span>
+        </div>
+        <div class="scarcity-timer" id="scarcityTimer">
+            <span class="timer-label">Meeting starts in</span>
+            <span class="timer-value" id="timerValue">04:59</span>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- LEFT PANEL -->
+        <div class="side-panel history-panel">
+            <header>
+                <h2 id="dashboardTitle">Meeting Dashboard</h2>
+                <p id="dashboardWelcome">Welcome back, Anjani</p>
+                <!-- Authority: Verified badge -->
+                <div class="user-authority-badge" id="userBadge">
+                    <span class="verified-icon">✓</span>
+                    <span id="userBadgeText">Verified Student</span>
+                </div>
+            </header>
+
+            <!-- Social Proof: Active meetings counter -->
+            <div class="social-proof-card">
+                <div class="sp-header">
+                    <h4>Happening Now</h4>
+                    <span class="sp-live-dot"></span>
+                </div>
+                <div class="sp-stats">
+                    <div class="sp-stat">
+                        <span class="sp-number" id="activeMeetings">23</span>
+                        <span class="sp-label">Active meetings</span>
                     </div>
-                    <div class="setting-group">
-                        <label for="speakerSelect">Speaker</label>
-                        <select id="speakerSelect">
-                            <option>Default — Built-in Speaker</option>
-                            <option>External Speaker</option>
-                        </select>
+                    <div class="sp-stat">
+                        <span class="sp-number" id="activeUsers">187</span>
+                        <span class="sp-label">People online</span>
                     </div>
-                    <div class="setting-toggle">
-                        <div class="toggle-info">
-                            <div class="toggle-label">Noise suppression</div>
-                            <div class="toggle-desc">Automatically filter background noise</div>
+                </div>
+                <!-- Social proof avatars -->
+                <div class="sp-users">
+                    <div class="avatar-stack-lg">
+                        <div class="mini-avatar avatar-color-1">BS</div>
+                        <div class="mini-avatar avatar-color-2">RK</div>
+                        <div class="mini-avatar avatar-color-3">PS</div>
+                        <div class="mini-avatar avatar-color-0">AN</div>
+                        <div class="mini-avatar avatar-color-4">+3</div>
+                    </div>
+                    <span class="sp-names">Prof. Sivaselvan, Rahul, Priya and 4 others</span>
+                </div>
+            </div>
+
+            <!-- Meeting creation (Legacy abandonment: segmented, no dropdowns) -->
+            <div class="meeting-type-selector">
+                <label>Create New Meeting</label>
+                <div class="segmented-control" role="group">
+                    <button class="segment active" onclick="setMeetingType('instant')">Instant</button>
+                    <button class="segment" onclick="setMeetingType('later')">For Later</button>
+                    <button class="segment" onclick="setMeetingType('calendar')">Calendar</button>
+                </div>
+                <p class="auto-save-hint">✓ Changes auto-save. No reset button needed.</p>
+            </div>
+
+            <!-- Frequent contacts (Liking — familiar faces) -->
+            <div class="quick-invite-section">
+                <label>Quick Invite (People you like)</label>
+                <div class="frequent-contacts">
+                    <div class="contact-pill avatar-color-1">BS <span>Prof. Sivaselvan</span></div>
+                    <div class="contact-pill avatar-color-2">RK <span>Rahul K.</span></div>
+                    <div class="contact-pill avatar-color-3">PS <span>Priya S.</span></div>
+                </div>
+            </div>
+
+            <!-- Meeting history (infinite scroll) -->
+            <div class="history-list-wrapper">
+                <label>Past Recordings</label>
+                <div class="infinite-scroll-list" id="pastMeetingsList"></div>
+                <div class="infinite-loading-spinner" id="loadingSpinner">Loading more...</div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: Auth + CAPTCHA -->
+        <div class="side-panel auth-panel">
+            <div class="auth-card">
+                <h2>Join Meeting</h2>
+                <p>Authentication required for HCI Term Review.</p>
+
+                <!-- Authority endorsement -->
+                <div class="authority-endorsement">
+                    <div class="endorsement-avatar avatar-color-1">BS</div>
+                    <div class="endorsement-info">
+                        <span class="endorsement-name">Prof. Sivaselvan</span>
+                        <span class="endorsement-role">Meeting Host • Verified Educator</span>
+                    </div>
+                    <span class="verified-badge-sm">✓</span>
+                </div>
+
+                <!-- Password (legacy abandonment: visible by default) -->
+                <div class="input-group">
+                    <label for="meetingPasscode">Meeting Passcode</label>
+                    <div class="password-wrapper">
+                        <input type="text" id="meetingPasscode" value="HCI-Final-2026" placeholder="Enter code">
+                        <button class="toggle-password" onclick="togglePasswordVisibility()" aria-label="Toggle password visibility">Hide</button>
+                    </div>
+                </div>
+
+                <!-- Adaptive Verification Container (Layered Security) -->
+                <div class="adaptive-verification-section" id="adaptiveVerificationContainer">
+                    <button class="btn-primary auth-submit-btn" id="joinMeetingBtn" onclick="validateAndJoin()">Join Meeting</button>
+                    <div style="text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--success-green)"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                        <span>Trusted by 5M+ users worldwide. End-to-end encrypted.</span>
+                    </div>
+                    
+                    <div id="authErrorMsg" class="error-msg"></div>
+
+                    <!-- Layer 1: Invisible Heuristic Spinner -->
+                    <div class="invisible-layer" id="invisibleLayer" style="display:none;">
+                        <div class="spinner-analysis"></div>
+                        <span>Evaluating security...</span>
+                    </div>
+
+                    <!-- Layer 2: Spatial Drag Challenge (Low Risk Flag) -->
+                    <div class="captcha-box novel-captcha" id="spatialChallenge" style="display:none;">
+                        <span class="captcha-prompt">Security Check: Slide the key to the lock to enter securely:</span>
+                        <div class="drag-environment adaptive-drag">
+                            <div class="drag-target" id="meetingRoomTarget">🔒 Room</div>
+                            <div class="draggable-item" id="userDraggable" draggable="true">🔑</div>
                         </div>
-                        <div class="toggle-switch on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
-                    </div>
-                    <div class="setting-toggle">
-                        <div class="toggle-info">
-                            <div class="toggle-label">Auto-adjust microphone</div>
-                            <div class="toggle-desc">Automatically adjust volume levels</div>
+                        <div class="accessibility-fallback">
+                            <a href="javascript:void(0)" onclick="triggerSemanticChallenge()">Using a screen reader? Audio alternative.</a>
                         </div>
-                        <div class="toggle-switch on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
+                    </div>
+
+                    <!-- Layer 3: Semantic Challenge (Screen Reader Fallback) -->
+                    <div class="captcha-box" id="semanticChallenge" style="display:none;">
+                        <span class="captcha-prompt">Audio/Logic challenge: What is 2 + 5?</span>
+                        <input type="number" id="semanticResponse" placeholder="Type answer">
+                        <button class="btn-primary-sm" onclick="verifySemantic()">Verify</button>
                     </div>
                 </div>
-                <!-- Video Tab -->
-                <div class="settings-tab-content" id="settingsVideo" style="display:none;">
-                    <h3>Video</h3>
-                    <div class="setting-group">
-                        <label for="cameraSelect">Camera</label>
-                        <select id="cameraSelect">
-                            <option>Default — FaceTime HD Camera</option>
-                            <option>External Webcam</option>
-                        </select>
+                <div id="authErrorMsg" class="error-msg"></div>
+
+                <!-- Premium upgrade trigger (Scarcity + Social Proof) -->
+                <div class="premium-nudge" id="premiumNudge">
+                    <div class="premium-header">
+                        <span class="premium-badge">⚡ PRO</span>
+                        <h4>Upgrade for AI meeting summaries</h4>
                     </div>
-                    <div class="setting-group">
-                        <label for="resSelect">Send resolution</label>
-                        <select id="resSelect">
-                            <option>Auto (recommended)</option>
-                            <option>720p</option>
-                            <option>360p</option>
-                        </select>
-                    </div>
-                    <div class="setting-toggle">
-                        <div class="toggle-info">
-                            <div class="toggle-label">Mirror my video</div>
-                            <div class="toggle-desc">Preview is mirrored, others see non-mirrored</div>
-                        </div>
-                        <div class="toggle-switch on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
-                    </div>
-                </div>
-                <!-- General Tab -->
-                <div class="settings-tab-content" id="settingsGeneral" style="display:none;">
-                    <h3>General</h3>
-                    <div class="setting-toggle">
-                        <div class="toggle-info">
-                            <div class="toggle-label">Show meeting timer</div>
-                            <div class="toggle-desc">Display elapsed time in meeting</div>
-                        </div>
-                        <div class="toggle-switch on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
-                    </div>
-                    <div class="setting-toggle">
-                        <div class="toggle-info">
-                            <div class="toggle-label">Show keyboard shortcut hints</div>
-                            <div class="toggle-desc">Display shortcuts on hover</div>
-                        </div>
-                        <div class="toggle-switch on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
-                    </div>
-                    <div class="setting-toggle">
-                        <div class="toggle-info">
-                            <div class="toggle-label">Onboarding tips</div>
-                            <div class="toggle-desc">Show contextual learning tips</div>
-                        </div>
-                        <div class="toggle-switch on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
-                    </div>
-                </div>
-                <!-- Accessibility Tab -->
-                <div class="settings-tab-content" id="settingsAccessibility" style="display:none;">
-                    <h3>Accessibility</h3>
-                    <div class="setting-toggle">
-                        <div class="toggle-info">
-                            <div class="toggle-label">High contrast mode</div>
-                            <div class="toggle-desc">Increase border visibility for all elements</div>
-                        </div>
-                        <div class="toggle-switch" onclick="toggleHighContrast(this)" role="switch" aria-checked="false" tabindex="0"></div>
-                    </div>
-                    <div class="setting-toggle">
-                        <div class="toggle-info">
-                            <div class="toggle-label">Captions always on</div>
-                            <div class="toggle-desc">Enable captions by default in every meeting</div>
-                        </div>
-                        <div class="toggle-switch" onclick="this.classList.toggle('on')" role="switch" aria-checked="false" tabindex="0"></div>
-                    </div>
-                    <div class="setting-toggle">
-                        <div class="toggle-info">
-                            <div class="toggle-label">Screen reader optimizations</div>
-                            <div class="toggle-desc">Enhanced ARIA labels and announcements</div>
-                        </div>
-                        <div class="toggle-switch on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
+                    <p>Join 10,000+ educators who use AI-powered features</p>
+                    <div class="premium-scarcity">
+                        <span>🔥 40% off ends Friday</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ============================================================
-     KEYBOARD SHORTCUTS MODAL
-     HCI: Shneiderman #2 (Shortcuts for frequent users),
-           Nielsen #7 (Flexibility & Efficiency),
-           Recognition vs Recall (Nielsen #6), Law of Learning
-     ============================================================ -->
-<div class="modal-overlay shortcuts-modal" id="shortcutsModal">
-    <div class="modal-card">
-        <div class="modal-card-header">
-            <h2>Keyboard shortcuts</h2>
-            <button class="panel-close-btn" onclick="closeShortcuts()" aria-label="Close shortcuts">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        <div class="modal-card-body">
-            <input type="text" class="shortcuts-search" id="shortcutSearch" placeholder="Search shortcuts..." aria-label="Search shortcuts">
-
-            <div class="shortcut-group">
-                <h4>Audio & Video</h4>
-                <div class="shortcut-row"><span class="action">Toggle microphone</span><span class="keys"><kbd>Space</kbd></span></div>
-                <div class="shortcut-row"><span class="action">Toggle camera</span><span class="keys"><kbd>Ctrl</kbd> + <kbd>E</kbd></span></div>
-                <div class="shortcut-row"><span class="action">Toggle captions</span><span class="keys"><kbd>C</kbd></span></div>
-            </div>
-
-            <div class="shortcut-group">
-                <h4>Screen Sharing</h4>
-                <div class="shortcut-row"><span class="action">Present screen</span><span class="keys"><kbd>Ctrl</kbd> + <kbd>D</kbd></span></div>
-            </div>
-
-            <div class="shortcut-group">
-                <h4>Interactions</h4>
-                <div class="shortcut-row"><span class="action">Raise / Lower hand</span><span class="keys"><kbd>Ctrl</kbd> + <kbd>H</kbd></span></div>
-                <div class="shortcut-row"><span class="action">Open chat</span><span class="keys"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd></span></div>
-                <div class="shortcut-row"><span class="action">Open people</span><span class="keys"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></span></div>
-            </div>
-
-            <div class="shortcut-group">
-                <h4>General</h4>
-                <div class="shortcut-row"><span class="action">Show keyboard shortcuts</span><span class="keys"><kbd>Shift</kbd> + <kbd>?</kbd></span></div>
-                <div class="shortcut-row"><span class="action">Undo last action</span><span class="keys"><kbd>Ctrl</kbd> + <kbd>Z</kbd></span></div>
-                <div class="shortcut-row"><span class="action">Toggle grid / speaker view</span><span class="keys"><kbd>Ctrl</kbd> + <kbd>G</kbd></span></div>
-            </div>
-        </div>
+    <!-- Commitment: Final progress -->
+    <div class="commitment-progress bottom-bar" id="bottomProgressBar">
+        <div class="progress-step completed"><span>✓</span><label>Your Role</label></div>
+        <div class="progress-line filled"></div>
+        <div class="progress-step completed"><span>✓</span><label>Quick Setup</label></div>
+        <div class="progress-line filled"></div>
+        <div class="progress-step active"><span>3</span><label>Join Meeting</label></div>
     </div>
 </div>
 
-<!-- ============================================================
-     TOAST / SNACKBAR (Undo System)
-     HCI: Shneiderman #6 (Easy Reversal), Nielsen #3 (User Control),
-           Error Recovery, Psychological Safety
-     ============================================================ -->
-<div class="toast" id="toast" role="status" aria-live="polite">
-    <span id="toastMessage">Action performed</span>
-    <button class="toast-action" id="toastUndo" onclick="performUndo()">Undo</button>
-    <span class="toast-timer" id="toastTimer"></span>
-</div>
-
-<!-- ============================================================
-     ONBOARDING TOOLTIP (Progressive Disclosure / Learnability)
-     HCI: Learnability, Progressive Disclosure, Law of Learning,
-           Nielsen #10 (Help & Documentation)
-     ============================================================ -->
-<div class="onboarding-tooltip arrow-bottom" id="onboardingTooltip">
-    <h4 id="tooltipTitle">Quick tip</h4>
-    <p id="tooltipMessage">Content here</p>
-    <div class="tooltip-footer">
-        <span class="tooltip-progress" id="tooltipProgress">1 of 4</span>
-        <div class="tooltip-actions">
-            <button class="btn-skip" onclick="skipOnboarding()">Skip all</button>
-            <button class="btn-next" id="tooltipNextBtn" onclick="nextOnboardingStep()">Next</button>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     CONTEXTUAL TIP (Bottom-right)
-     HCI: Learnability, Power Law of Practice
-     ============================================================ -->
-<div class="context-tip" id="contextTip">
-    <div class="tip-header">
-        <span class="tip-bulb">💡</span>
-        <h4 id="ctxTipTitle">Pro tip</h4>
-    </div>
-    <div class="tip-body" id="ctxTipBody">Tip content here.</div>
-    <div class="tip-actions">
-        <button class="btn-tip-primary" onclick="dismissContextTip()">Got it</button>
-        <button class="btn-tip-dismiss" onclick="dismissContextTip()">Don't show again</button>
-    </div>
-</div>
-
-<!-- ============================================================
-     SCREEN 3: MEETING ENDED (Closure)
-     HCI: Shneiderman #4 (Closure / Sequence Completion),
-           Gestalt Closure, Feedback
-     ============================================================ -->
-<div class="meeting-ended-screen" id="meetingEndedScreen">
-    <div class="end-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
-    </div>
-    <h2>You left the meeting</h2>
-    <div class="end-details">
-        <p>Meeting: HCI Class Discussion</p>
-        <p>Duration: <span id="endDuration">00:00</span></p>
-    </div>
-    <div class="end-feedback">
-        <p>How was your meeting experience?</p>
-        <div class="rating-stars">
-            <button class="star-btn" onclick="rateMeeting(1)">★</button>
-            <button class="star-btn" onclick="rateMeeting(2)">★</button>
-            <button class="star-btn" onclick="rateMeeting(3)">★</button>
-            <button class="star-btn" onclick="rateMeeting(4)">★</button>
-            <button class="star-btn" onclick="rateMeeting(5)">★</button>
-        </div>
-    </div>
-    <div class="end-actions">
-        <button class="btn-rejoin" onclick="rejoinMeeting()">Rejoin</button>
-        <button class="btn-home" onclick="goHome()">Return to home</button>
-    </div>
-</div>
-
-<!-- ============================================================
-     COMMAND PALETTE (Ctrl+K)
-     HCI: Nielsen #10 (Help & Documentation) / Expert Accelerator
-     ============================================================ -->
-<div class="modal-overlay" id="commandPaletteOverlay">
-    <div class="command-palette" id="commandPalette" role="dialog" aria-modal="true" aria-label="Command Palette">
-        <div class="cmd-header">
-            <svg viewBox="0 0 24 24" fill="#9aa0a6"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            <input type="text" id="cmdInput" placeholder="Search commands, settings, or help... (e.g. 'mute')" autocomplete="off">
-        </div>
-        <ul class="cmd-results" id="cmdResults">
-            <li class="cmd-item" onclick="executeCommand('mute')">Toggle Mute <span class="cmd-shortcut">Space</span></li>
-            <li class="cmd-item" onclick="executeCommand('video')">Toggle Video <span class="cmd-shortcut">Ctrl+E</span></li>
-            <li class="cmd-item" onclick="executeCommand('share')">Share Screen <span class="cmd-shortcut">Ctrl+D</span></li>
-            <li class="cmd-item" onclick="executeCommand('help')">Open Help Center <span class="cmd-shortcut">?</span></li>
-        </ul>
-    </div>
-</div>
-
-<!-- PIP Self-Status (Anti-Fatigue Mode) -->
-<div class="pip-self-status" id="pipSelfStatus">
-    <span class="mic-status" id="pipMicIcon">🎙️</span>
-    <span>You</span>
-    <button class="pip-expand-btn" onclick="toggleSelfView()">Expand</button>
-</div>
-
-<!-- ============================================================
-     BREAKOUT ROOMS PANEL
-     HCI: Information Architecture, Direct Manipulation (Norman),
-          Gestalt Grouping (Proximity/Similarity), Hick's Law,
-          User Control & Freedom (Nielsen #3)
-     ============================================================ -->
-<div class="modal-overlay breakout-modal" id="breakoutModal">
-    <div class="modal-card breakout-card">
-        <div class="modal-card-header">
-            <h2>Breakout Rooms</h2>
-            <button class="panel-close-btn" onclick="closeBreakoutRooms()" aria-label="Close breakout rooms">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        <div class="modal-card-body breakout-body">
-            <!-- Quick setup - Hick's Law: pre-configured options reduce choices -->
-            <div class="breakout-quick-setup">
-                <label>Quick Setup</label>
-                <div class="breakout-presets">
-                    <button class="breakout-preset active" onclick="setBreakoutCount(2, this)">2 Rooms</button>
-                    <button class="breakout-preset" onclick="setBreakoutCount(3, this)">3 Rooms</button>
-                    <button class="breakout-preset" onclick="setBreakoutCount(4, this)">4 Rooms</button>
-                </div>
-            </div>
-            <!-- Room cards - Gestalt: grouped by proximity -->
-            <div class="breakout-rooms-list" id="breakoutRoomsList">
-                <div class="breakout-room-card">
-                    <div class="room-header">
-                        <span class="room-name">🟢 Room 1</span>
-                        <span class="room-count">2 participants</span>
-                    </div>
-                    <div class="room-participants">
-                        <div class="room-participant"><div class="p-avatar avatar-color-0" style="width:28px;height:28px;font-size:11px;">AN</div><span>You</span></div>
-                        <div class="room-participant"><div class="p-avatar avatar-color-1" style="width:28px;height:28px;font-size:11px;">BS</div><span>Prof. Sivaselvan</span></div>
-                    </div>
-                </div>
-                <div class="breakout-room-card">
-                    <div class="room-header">
-                        <span class="room-name">🔵 Room 2</span>
-                        <span class="room-count">2 participants</span>
-                    </div>
-                    <div class="room-participants">
-                        <div class="room-participant"><div class="p-avatar avatar-color-2" style="width:28px;height:28px;font-size:11px;">RK</div><span>Rahul K</span></div>
-                        <div class="room-participant"><div class="p-avatar avatar-color-3" style="width:28px;height:28px;font-size:11px;">PS</div><span>Priya S</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="breakout-timer-setting">
-                <label>Room Duration</label>
-                <div class="breakout-duration-btns">
-                    <button class="duration-btn" onclick="setBreakoutDuration(5,this)">5 min</button>
-                    <button class="duration-btn active" onclick="setBreakoutDuration(10,this)">10 min</button>
-                    <button class="duration-btn" onclick="setBreakoutDuration(15,this)">15 min</button>
-                    <button class="duration-btn" onclick="setBreakoutDuration(20,this)">20 min</button>
-                </div>
-            </div>
-            <div class="breakout-actions">
-                <button class="btn-breakout-start" onclick="startBreakoutRooms()">Open all rooms</button>
-                <button class="btn-breakout-shuffle" onclick="shuffleBreakoutRooms()">🔀 Shuffle</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     LIVE POLLS SYSTEM
-     HCI: Progressive Disclosure, Feedback (Shneiderman #3),
-          Recognition vs Recall (Nielsen #6), Emotional Design,
-          Closure (Shneiderman #4 — poll lifecycle)
-     ============================================================ -->
-<div class="modal-overlay polls-modal" id="pollsModal">
-    <div class="modal-card polls-card">
-        <div class="modal-card-header">
-            <h2>Live Poll</h2>
-            <button class="panel-close-btn" onclick="closePoll()" aria-label="Close poll">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        <div class="modal-card-body polls-body">
-            <!-- Poll creation view -->
-            <div id="pollCreateView">
-                <div class="poll-question-input">
-                    <label for="pollQuestion">Question</label>
-                    <input type="text" id="pollQuestion" placeholder="e.g., Which HCI principle is most important?" value="Which HCI principle is most important?">
-                </div>
-                <div class="poll-options-list" id="pollOptionsList">
-                    <div class="poll-option-input">
-                        <span class="option-letter">A</span>
-                        <input type="text" placeholder="Option A" value="Fitts's Law">
-                    </div>
-                    <div class="poll-option-input">
-                        <span class="option-letter">B</span>
-                        <input type="text" placeholder="Option B" value="Nielsen's Heuristics">
-                    </div>
-                    <div class="poll-option-input">
-                        <span class="option-letter">C</span>
-                        <input type="text" placeholder="Option C" value="Gestalt Principles">
-                    </div>
-                    <div class="poll-option-input">
-                        <span class="option-letter">D</span>
-                        <input type="text" placeholder="Option D" value="Shneiderman's Rules">
-                    </div>
-                </div>
-                <button class="btn-launch-poll" onclick="launchPoll()">🚀 Launch Poll</button>
-            </div>
-            <!-- Poll results view (shown after voting) -->
-            <div id="pollResultsView" style="display:none;">
-                <h3 id="pollResultQuestion" class="poll-result-question"></h3>
-                <div class="poll-results-bars" id="pollResultsBars"></div>
-                <div class="poll-meta">
-                    <span id="pollVoteCount">4 votes</span>
-                    <span id="pollTimeLeft">Closed</span>
-                </div>
-                <button class="btn-close-poll" onclick="closePoll()">Close Poll</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     VIRTUAL BACKGROUND SELECTOR
-     HCI: Recognition vs Recall (visual thumbnails, not text list),
-          Direct Manipulation, Affordance (Norman),
-          Aesthetic-Usability Effect
-     ============================================================ -->
-<div class="modal-overlay bg-modal" id="bgModal">
-    <div class="modal-card bg-card">
-        <div class="modal-card-header">
-            <h2>Virtual Background</h2>
-            <button class="panel-close-btn" onclick="closeBgPicker()" aria-label="Close background picker">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        <div class="modal-card-body bg-body">
-            <div class="bg-category">
-                <label>Effects</label>
-                <div class="bg-effects-row">
-                    <button class="bg-effect-btn active" onclick="setBgEffect('none', this)" title="No effect">
-                        <div class="bg-preview bg-none">
-                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                        </div>
-                        <span>None</span>
-                    </button>
-                    <button class="bg-effect-btn" onclick="setBgEffect('blur-light', this)" title="Slight blur">
-                        <div class="bg-preview bg-blur-light"></div>
-                        <span>Slight blur</span>
-                    </button>
-                    <button class="bg-effect-btn" onclick="setBgEffect('blur-heavy', this)" title="Heavy blur">
-                        <div class="bg-preview bg-blur-heavy"></div>
-                        <span>Full blur</span>
-                    </button>
-                </div>
-            </div>
-            <div class="bg-category">
-                <label>Backgrounds</label>
-                <div class="bg-grid">
-                    <button class="bg-tile" onclick="setBgVirtual('gradient-sunset', this)" title="Sunset">
-                        <div class="bg-swatch" style="background: linear-gradient(135deg, #ff6b6b, #feca57, #ff9ff3);"></div>
-                    </button>
-                    <button class="bg-tile" onclick="setBgVirtual('gradient-ocean', this)" title="Ocean">
-                        <div class="bg-swatch" style="background: linear-gradient(135deg, #0abde3, #48dbfb, #c7ecee);"></div>
-                    </button>
-                    <button class="bg-tile" onclick="setBgVirtual('gradient-forest', this)" title="Forest">
-                        <div class="bg-swatch" style="background: linear-gradient(135deg, #2d6a4f, #52b788, #b7e4c7);"></div>
-                    </button>
-                    <button class="bg-tile" onclick="setBgVirtual('gradient-aurora', this)" title="Aurora">
-                        <div class="bg-swatch" style="background: linear-gradient(135deg, #6c5ce7, #a29bfe, #dfe6e9);"></div>
-                    </button>
-                    <button class="bg-tile" onclick="setBgVirtual('gradient-warm', this)" title="Warm">
-                        <div class="bg-swatch" style="background: linear-gradient(135deg, #fdcb6e, #e17055, #d63031);"></div>
-                    </button>
-                    <button class="bg-tile" onclick="setBgVirtual('solid-dark', this)" title="Dark">
-                        <div class="bg-swatch" style="background: #2d3436;"></div>
-                    </button>
-                    <button class="bg-tile" onclick="setBgVirtual('solid-blue', this)" title="Blue">
-                        <div class="bg-swatch" style="background: #0984e3;"></div>
-                    </button>
-                    <button class="bg-tile" onclick="setBgVirtual('solid-green', this)" title="Green">
-                        <div class="bg-swatch" style="background: #00b894;"></div>
-                    </button>
-                </div>
-            </div>
-            <p class="bg-hint">💡 Background changes are visible to all participants.</p>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     MEETING NOTES / COLLABORATIVE NOTEPAD
-     HCI: Shneiderman #4 (Closure — notes persist), 
-          External Memory Aid (Miller's Law),
-          Flexibility (Nielsen #7), Consistency
-     ============================================================ -->
-<div id="notesPanel" style="display:none;flex-direction:column;height:100%;">
-    <div class="panel-header">
-        <h2>Meeting Notes</h2>
-        <button class="panel-close-btn" onclick="closePanel()" aria-label="Close notes">
-            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-    </div>
-    <div class="notes-toolbar">
-        <button class="notes-tool-btn" onclick="formatNote('bold')" title="Bold"><b>B</b></button>
-        <button class="notes-tool-btn" onclick="formatNote('italic')" title="Italic"><i>I</i></button>
-        <button class="notes-tool-btn" onclick="formatNote('bullet')" title="Bullet list">•</button>
-        <div class="notes-autosave">
-            <span class="autosave-dot"></span>
-            <span>Auto-saved</span>
-        </div>
-    </div>
-    <div class="notes-content" id="notesContent" contenteditable="true" aria-label="Meeting notes editor" placeholder="Start typing meeting notes...">
-        <p><strong>HCI Class Discussion</strong></p>
-        <p>📅 Meeting Notes — Auto-saved</p>
-        <p><br></p>
-    </div>
-    <div class="notes-footer">
-        <button class="btn-export-notes" onclick="exportNotes()">📥 Export Notes</button>
-        <span class="notes-word-count" id="notesWordCount">0 words</span>
-    </div>
-</div>
-
-<!-- ============================================================
-     FOCUS MODE OVERLAY
-     HCI: Attention Management, Signal-to-Noise Ratio,
-          Selective Attention (Cognitive Psychology),
-          User Control (Nielsen #3), Tesler's Law
-     ============================================================ -->
-<div class="focus-mode-indicator" id="focusModeIndicator">
-    <div class="focus-dot"></div>
-    <span>Focus Mode</span>
-    <button class="focus-exit-btn" onclick="toggleFocusMode()">Exit</button>
-</div>
-
-<!-- ============================================================
-     BREAK REMINDER
-     HCI: Persuasive Design (Fogg's Model), User Welfare,
-          Error Prevention (fatigue → errors), Nudge Theory,
-          Ethical Design
-     ============================================================ -->
-<div class="break-reminder" id="breakReminder">
-    <div class="break-reminder-content">
-        <div class="break-icon-large">☕</div>
-        <h3>Time for a break?</h3>
-        <p>You've been in this meeting for <span id="breakDuration">45 minutes</span>. Taking short breaks improves focus and reduces fatigue.</p>
-        <div class="break-actions">
-            <button class="btn-break-dismiss" onclick="dismissBreakReminder()">I'm fine, thanks</button>
-            <button class="btn-break-snooze" onclick="snoozeBreakReminder()">Remind in 15 min</button>
-        </div>
-        <div class="break-wellness-tip">
-            <span>💡</span>
-            <span id="wellnessTip">Try the 20-20-20 rule: Every 20 min, look at something 20 feet away for 20 seconds.</span>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     MEETING ASSISTANT (Liking & Reciprocity)
-     HCI: Contextual help, Proactive assistance, Anthropomorphism
-     Persuasion: Liking (friendly avatar), Reciprocity (helpful nudges)
-     ============================================================ -->
-<div class="meeting-assistant" id="meetingAssistant">
-    <div class="assistant-avatar">
-        <svg viewBox="0 0 24 24" fill="#fff" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-    </div>
-    <div class="assistant-bubble" id="assistantBubble">
-        Hi! I noticed you haven't spoken today. Want me to lower your mic volume if you're just listening?
-    </div>
-    <button class="assistant-close" onclick="closeAssistant()">×</button>
-</div>
-
-<!-- ============================================================
-     BREATHING EXERCISE OVERLAY (Aesthetic-Usability & Stress Reduction)
-     HCI: Calm Tech, Empathy, Cognitive load reduction
-     ============================================================ -->
-<div class="breathing-overlay" id="breathingOverlay" style="display:none;">
-    <div class="breathing-circle">
-        <div class="breathing-text" id="breathingText">Breathe In...</div>
-    </div>
-    <button class="btn-skip-breathe" onclick="stopBreathing()">Skip Exercise</button>
-</div>
-
-<!-- ============================================================
-     PREMIUM TRIGGERS (Scarcity & Authority)
-     HCI: Contextual upsell, Non-intrusive notification
-     Persuasion: Scarcity ("Ends tomorrow"), Authority
-     ============================================================ -->
-<div class="premium-toast" id="premiumToast" style="display:none;">
-    <div class="pt-icon">⚡</div>
-    <div class="pt-content">
-        <h4>Unlock AI Meeting Transcripts</h4>
-        <p>Used by 10k+ educators. <strong>40% off ends tomorrow!</strong></p>
-    </div>
-    <button class="pt-close" onclick="document.getElementById('premiumToast').style.display='none'">×</button>
-</div>
-
-<!-- ============================================================
-     POST-MEETING ENGAGEMENT SUMMARY (Commitment & Social Proof)
-     HCI: Gamification, Positive reinforcement, Feedback loop
-     Persuasion: Consistency (streaks), Social Proof (comparisons)
-     ============================================================ -->
-<div class="post-meeting-modal" id="postMeetingModal" style="display:none;">
-    <div class="pm-card">
-        <div class="pm-header">
-            <h2>Meeting Summary</h2>
-            <p>Great job! Here's how you contributed today.</p>
-        </div>
-        
-        <div class="pm-stats">
-            <div class="pm-stat-box">
-                <span class="pm-value">14 min</span>
-                <span class="pm-label">Speaking Time</span>
-            </div>
-            <div class="pm-stat-box highlight">
-                <span class="pm-value">Top 15%</span>
-                <span class="pm-label">Engagement Score</span>
-            </div>
-            <div class="pm-stat-box">
-                <span class="pm-value" id="pmStreak">4 🔥</span>
-                <span class="pm-label">Meeting Streak</span>
-            </div>
-        </div>
-
-        <div class="pm-achievements">
-            <h3>Achievements Unlocked</h3>
-            <div class="badges-row">
-                <div class="badge-item active" title="First to join">
-                    <div class="badge-icon">🥇</div>
-                    <span>Early Bird</span>
-                </div>
-                <div class="badge-item active" title="Used the meeting notes">
-                    <div class="badge-icon">📝</div>
-                    <span>Scribe</span>
-                </div>
-                <div class="badge-item active" title="Stayed unmuted and active">
-                    <div class="badge-icon">🎙️</div>
-                    <span>Active Voice</span>
-                </div>
-                <div class="badge-item locked" title="Take a break during a long meeting">
-                    <div class="badge-icon">☕</div>
-                    <span>Zen Master</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="pm-actions">
-            <!-- Social proof: share achievement -->
-            <button class="btn-share-stats">Share to Class Group</button>
-            <button class="btn-primary" onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     MEETING INFO MODAL (INVERTED PYRAMID)
-     HCI: Inverted Pyramid Guideline (Critical info top, secondary below)
-     ============================================================ -->
-<div class="modal-overlay info-modal" id="infoModal">
-    <div class="modal-card">
-        <div class="modal-card-header">
-            <h2>Meeting Details</h2>
-            <button class="panel-close-btn" onclick="closeInfoPanel()" aria-label="Close info">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        <div class="modal-card-body">
-            <!-- 1. The MOST IMPORTANT INFO (Top) -->
-            <div class="info-tier primary-info" style="background: rgba(138, 180, 248, 0.1); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                <h4 style="color: var(--blue-primary); margin-bottom: 8px; font-size: 0.9em; text-transform: uppercase;">1. Crucial Information</h4>
-                <div class="info-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <span style="font-weight: 500;">Joining Info</span>
-                    <span style="font-family: monospace; font-size: 1.1em; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;">meet.google.com/abc-defg-hij</span>
-                </div>
-                <div class="info-row" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-weight: 500;">Passcode</span>
-                    <span>HCI-Final-2026</span>
-                </div>
-                <button class="btn-primary" style="width: 100%; margin-top: 12px; padding: 10px;" onclick="navigator.clipboard.writeText('meet.google.com/abc-defg-hij'); alert('Link copied to clipboard');">Copy Joining Info</button>
-            </div>
-            
-            <!-- 2. IMPORTANT BUT NOT CRITICAL INFO (Middle) -->
-            <div class="info-tier secondary-info" style="margin-bottom: 16px; padding: 0 4px;">
-                <h4 style="color: var(--text-secondary); margin-bottom: 8px; font-size: 0.9em; text-transform: uppercase;">2. Secondary Details</h4>
-                <div class="info-row" style="margin-bottom: 8px;">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--text-secondary)" style="vertical-align:-3px; margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                    <strong>Host:</strong> Prof. Sivaselvan
-                </div>
-                <div class="info-row">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--text-secondary)" style="vertical-align:-3px; margin-right:4px;"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-                    <strong>Participants:</strong> <span id="infoPartCount">847</span> currently active
-                </div>
-            </div>
-
-            <!-- 3. BACKGROUND INFO (Bottom) -->
-            <div class="info-tier tertiary-info" style="color: var(--text-tertiary); font-size: 0.9em; padding: 0 4px;">
-                <h4 style="margin-bottom: 4px; font-size: 0.9em; text-transform: uppercase;">3. Background & Rules</h4>
-                <p>This is a formal end-semester review meeting. Please ensure your microphone is muted when not speaking. Sessions are actively recorded for grading purposes.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     ROBUSTNESS (NETWORK RECONNECTING OVERLAY)
-     HCI: Robustness, System Status feedback during faults
-     ============================================================ -->
-<div class="reconnecting-overlay" id="reconnectingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; flex-direction:column; justify-content:center; align-items:center; color:white;">
-    <div class="spinner" style="width:50px; height:50px; border:4px solid rgba(255,255,255,0.3); border-top:4px solid var(--blue-primary); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px;"></div>
-    <h2>Connection unstable...</h2>
-    <p>We're safely reconnecting you. Your video and audio are paused.</p>
-</div>
-
-<!-- ============================================================
-     PRIVACY SHIELD (POKA-YOKE / ASIMOV'S LAWS)
-     HCI: Error Prevention, Mistake Proofing
-     ============================================================ -->
-<div class="privacy-shield-overlay" id="privacyShieldOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; flex-direction:column; justify-content:center; align-items:center;">
-    <div class="shield-card" style="background:var(--bg-primary); border:2px solid var(--yellow-primary); border-radius:12px; padding:32px; max-width:450px; text-align:center;">
-        <div style="font-size:48px; margin-bottom:16px;">🛡️</div>
-        <h2 style="color:var(--text-primary); margin-bottom:12px;">Privacy Shield Active</h2>
-        <p style="color:var(--text-secondary); margin-bottom:24px; line-height:1.5;">Detected 3 unread OS messages. Your notifications have been auto-suppressed to prevent embarrassing leaks while presenting.</p>
-        <div style="display:flex; gap:12px; justify-content:center;">
-            <button class="btn-cancel" onclick="cancelScreenShare()" style="padding:10px 20px; border-radius:8px; border:1px solid var(--border-color); background:transparent; color:var(--text-primary); cursor:pointer;">Cancel Share</button>
-            <button class="btn-primary" onclick="proceedScreenShare()" style="padding:10px 20px; border-radius:8px; border:none; background:var(--blue-primary); color:#202124; font-weight:bold; cursor:pointer;">Acknowledge & Present</button>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     INFINITE EDGE PANIC MUTE (ADVANCED FITTS'S LAW)
-     HCI: Fitts's Law (Infinite depth target at screen corners)
-     ============================================================ -->
-<div id="fittsPanicZone" title="Panic Mute (Fitts's Law Infinite Edge)" style="position:fixed; bottom:0; left:0; width:50px; height:50px; background:transparent; z-index:999999; cursor:pointer;" onclick="panicMuteTrigger(event)"></div>
-
-<script src="script.js"></script>
+<script src="dashboard.js"></script>
 </body>
 </html>
