@@ -1,0 +1,481 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{float}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=purple,
+    filecolor=magenta,      
+    urlcolor=blue,
+    citecolor=black
+}
+
+\usepackage{listings}
+
+% Custom colors
+\definecolor{problemred}{RGB}{220,53,69}
+\definecolor{solutiongreen}{RGB}{40,167,69}
+\definecolor{hciblue}{RGB}{66,133,244}
+\definecolor{placeholderbg}{HTML}{F8F9FA}
+\definecolor{placeholderborder}{HTML}{DADCE0}
+
+% Custom Image Placeholder macro
+\newcommand{\imageplaceholder}[3]{
+    \begin{figure}[H]
+        \centering
+        \begin{tcolorbox}[colback=placeholderbg,colframe=placeholderborder,arc=4mm,height=7.5cm,valign=center,halign=center]
+            {\Large\textbf{\textcolor{hciblue}{[ IMAGE PLACEHOLDER: #1 ]}}}\\[0.5cm]
+            \textit{\textbf{What screenshot to take:}} #2\\[0.3cm]
+            \textit{\textbf{HCI Purpose:}} #3
+        \end{tcolorbox}
+        \caption{Demonstration of #1 implementation.}
+    \end{figure}
+}
+
+\title{\textbf{HCI Comprehensive Evaluation Report}\\
+\large Application Domain: Google Meet Redesign\\\small CS23B1102 - End Semester Project}
+\author{CHALAMCHALA ANJANI NITHIN}
+\date{\today}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+
+{\LARGE \textbf{Indian Institute of Information Technology,\\
+Design and Manufacturing, Kancheepuram}}\\[1.5cm]
+
+{\large (Human-Computer Interaction - End Semester Evaluation)}\\[3cm]
+
+\rule{\linewidth}{0.5pt}\\[0.4cm]
+{\Huge \textbf{Interactive Design Layout for Google Meet}}\\[0.3cm]
+{\Large \textbf{Comprehensive Application of Cognitive Laws \& Heuristics}}\\[0.3cm]
+\rule{\linewidth}{0.5pt}\\[2cm]
+
+\vfill
+
+\textbf{CHALAMCHALA ANJANI NITHIN}\\[0.2cm]
+\textbf{CS23B1102}\\[0.2cm]
+\textit{Department of Computer Science and Engineering}\\[0.5cm]
+
+{\large \today}
+
+\end{center}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+This report comprehensively documents the interactive redesign of Google Meet. In strict adherence to the End-Semester assignment rubric, this high-fidelity prototype bypasses generic wireframes to offer a fully interactive HTML/CSS/JS frontend. Every visual interface choice implicitly respects a requested Psychological concept, Classical Design Law, or Usability heuristic.
+
+The report is structured in two major parts:
+\begin{enumerate}
+    \item \textbf{End Review Enhancements} — All-new features and design systems introduced for the final evaluation, covering advanced cognitive laws, persuasive psychology, accessibility paradigms, and novel interaction patterns.
+    \item \textbf{Mid Review Enhancements (Enhanced)} — The five core usability problems identified during the mid-semester review, now significantly enhanced with richer HCI mappings and deeper implementation.
+\end{enumerate}
+
+%% =====================================================================
+%% PART I: END REVIEW ENHANCEMENTS (ALL NEW FEATURES)
+%% =====================================================================
+\part{End Review Enhancements}
+\label{part:end-review}
+
+This part presents all the \textbf{new features} designed and implemented exclusively for the end-semester evaluation. These features go beyond the mid-review fixes to address advanced cognitive, psychological, and accessibility dimensions of the Google Meet redesign.
+
+% -------------------------------------------------------
+\section{Classical Design Laws}
+
+\subsection{Vital Few / 80-20 Rule}
+The primary bottom control bar was strictly reduced to 7 buttons that constitute 80\% of user interactions.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/1.png}
+    \caption{Persistent Control Bar — Reduces visual clutter focusing only on the Vital Few.}
+\end{figure}
+
+\subsection{Law of Learning (Learnability)}
+If a user clicks the "Mute" button five times manually, the system organically surfaces a tooltip indicating they can use the \texttt{Spacebar}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/2.png}
+    \caption{Learnability Tooltip — Gentle nudging towards Power-law efficiency mapping.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Closure \& External Memory}
+
+\subsection{Meeting Summary Interface}
+The concept of \textbf{Closure} states that operations should have distinct beginnings, middles, and ends. When leaving a meeting, instead of abruptly dropping the user back to the dashboard, the system renders a \textbf{Meeting Summary}.
+Furthermore, this serves to reduce reliance on the user's \textbf{External Memory} (Cognitive load reduction), by summarizing chat logs, auto-generated notes, and session duration immediately after the call concludes.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/3.png}
+    \caption{Meeting Summary / Closure Screen — Applies Gestalt Closure and reduces reliance on short-term external memory.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Robustness \& Asimov's Laws}
+System faults should never unpredictably drop user state (Asimov's Law of non-harm). 
+\begin{itemize}
+    \item \textbf{Network Failure Modal}: We implemented a robustness layer simulating network failure. The interface freezes with a non-destructive "Reconnecting..." overlay instead of kicking the user out.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/4.png}
+    \caption{Reconnecting Robustness State — Protects from sudden system state-loss, fulfilling Robustness.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Cognitive Defense \& Persuasive Support Systems}
+
+\subsection{Anthropomorphic User Support Systems (Meeting Assistant)}
+When users struggle silently, legacy systems fail to notice. If our AI detects inactivity (no speaking), a non-obtrusive \textbf{Meeting Assistant Bubble} surfaces gracefully: \textit{"I'm observing you are not speaking... want me to lower your mic?"} This satisfies Proactive Support System Principles.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/5.png}
+    \caption{Proactive Assistant Tooltip — Proactive, empathetic user support preventing accidental background noise.}
+\end{figure}
+
+\subsection{Nudge Theory: Anti-Fatigue 20-20-20 Tip}
+To defend against "Zoom Fatigue", the system deploys Thaler's \textbf{Nudge Theory}. During long sessions, a non-obtrusive tooltip naturally appears advocating the \textbf{20-20-20 Timebreak Rule} (Look 20 feet away, for 20 seconds, every 20 mins) to aggressively lower Cortisol and visual stress.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/6.png}
+    \caption{Anti-Fatigue Break Nudge — Applies empathetic cognitive defense through gentle nudges instead of force.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Cognitive Principles}
+
+\subsection{Serial Position Effect, Primality \& Recency}
+Human memory retention biases the start and end of lists. 
+\begin{itemize}
+    \item \textbf{Primality}: The Mic and Video toggles are pinned at the start (Left) of the row.
+    \item \textbf{Recency}: The highly destructive "Leave" button is pinned precisely at the extreme end (Right).
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/7.png}
+    \caption{Serial Position Control Row — Leverages cognitive memory biases to organize tools spatially.}
+\end{figure}
+
+\subsection{The Inverted Pyramid Pattern}
+Information chunking requires critical data to be surfaced immediately. The "Info" panel strictly scales information from Crucial (Join Link / Password) to Secondary (Participant count).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/8.png}
+    \caption{Inverted Pyramid Info Panel — Demonstrates hierarchical information layout based on journalism's inverted pyramid.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Mental Models \& Interaction Paradigms}
+
+\subsection{Semantic Captcha Replacement}
+Text CAPTCHAs are an outdated interaction paradigm. Our system asks users to solve a basic logic/math puzzle, drastically reducing cognitive load.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/9.png}
+    \caption{Math CAPTCHA Authentication — Replacing legacy verification with a direct Semantic mechanism.}
+\end{figure}
+
+\subsection{Gestalt Laws of Perception: Breakout Rooms}
+We rely on \textbf{Gestalt Proximity and Closure}. Users are visually contained within distinct card borders (Breakout 1, Breakout 2), making the brain recognize them as unified groups without reading labels.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/10.png}
+    \caption{Breakout Rooms UI — Gestalt Law of enclosure creating mental organization naturally.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Web Usability \& Navigation Guidelines}
+
+\subsection{Breadcrumb Navigation Design}
+Deep nested modal states lose user context. The Settings menu implements explicit \textbf{Breadcrumb trails} (`Meeting > Settings > Audio`) instantly resolving spatial disorientation.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/11.png}
+    \caption{Settings Breadcrumbs — Follows explicit Web Navigation Design Guidelines.}
+\end{figure}
+
+\subsection{Legacy Design Abandonment}
+Older Web UI relied heavily on checkboxes. We implemented modern \textbf{Segmented Controls} to switch meeting states (Instant vs Scheduled).
+
+% -------------------------------------------------------
+\section{Visual Design Rules \& Psychology}
+
+\subsection{Shape \& Color Psychology}
+Interaction nodes use visceral subconscious psychology:
+\begin{itemize}
+    \item \textbf{Shape Guidelines (Pill vs Sharp)}: Safe primary actions are deeply rounded pill shapes (Radius: 9999px) implying approachability. The destructive "Leave" action uses sharp corners (Radius: small) to instil friction.
+    \item \textbf{Color Psychology (Trust \& Urgency)}: Mute uses `#EA4335` to map to "Stop". Our brand logo (Converge) adopts Trust/Deep Blue (`#4285F4`) to subconsciously promote communication security.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\textwidth]{LOGO_CONVERGE.png}
+    \caption{The Converge Logo heavily anchors on 'Trust Blue' to promote psychological safety.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/12.png}
+    \caption{Shape Psychology Buttons — Using edge-rounding metrics to psychologically imply risk or safety.}
+\end{figure}
+
+\subsection{Focus Mode (Tesler's Law)}
+Applying Tesler's Law, we shifted the visual burden of a 50-person grid away from the user by introducing \textbf{Focus Mode}, which isolates the speaker by dropping inactive participants into negative space.
+
+% -------------------------------------------------------
+\section{Persuasion Psychology (Cialdini)}
+Modern interfaces leverage psychology to drive interaction.
+\begin{itemize}
+    \item \textbf{Trust \& Authority}: In the dashboard, the interface explicitly anchors the user by boasting "Trusted by 5M+ users worldwide. End-to-end encrypted." This directly hits Cialdini's "Authority/Trust" persuasion metric.
+    \item \textbf{Scarcity/Social Proof}: The dashboard prompts indicate "14 other students are already waiting," and uses scarcity timers.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/13.png}
+    \caption{Persuasion Dashboard — Applying persuasive behavioural economics to UI motivation.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Universal Accessibility (High Contrast \& Motor Assist)}
+Beyond minimum contrast limits, actual physical HCI was addressed.
+\begin{itemize}
+    \item \textbf{Motor-Assist Mode (Fitts's Law applied)}: Users with tremors struggle with small icons. Toggling Motor-Assist drastically expands primary target width.
+    \item \textbf{High Contrast State}: Applying WCAG 2.1 AAA metrics, toggling High Contrast forces hyper-saturated yellows against pure black, overriding aesthetic choices strictly for ocular health requirements.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/14.png}
+    \caption{Accessibility Matrix — Physical HCI compensation scaling targets and contrast profiles for impaired users.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Poka-Yoke Error Prevention: Privacy Shield}
+In Japanese Lean Manufacturing, \textbf{Poka-Yoke} is the concept of ``mistake-proofing'' — designing systems so that errors become \textit{physically impossible} rather than merely warned against. This is also a direct implementation of \textbf{Nielsen's \#5 (Error Prevention)} and \textbf{Asimov's First Law} (a system must not, through inaction, allow a human to come to harm).
+
+When a user clicks ``Present Now'' to share their screen, the system does \textbf{not} immediately begin sharing. Instead, an intercept modal — the \textbf{Privacy Shield} — halts the action and displays:
+
+\begin{quote}
+\textit{``Privacy Shield Active: Detected 3 unread OS messages. Your notifications have been auto-suppressed to prevent embarrassing leaks while presenting.''}
+\end{quote}
+
+The user must explicitly acknowledge the shield and click ``Acknowledge \& Present'' to proceed. They can also abort entirely with ``Cancel Share''. This transforms a potentially catastrophic social error (accidentally exposing private messages to 50 people) into a deliberate, conscious action.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/15.png}
+    \caption{Privacy Shield Intercept Modal — Demonstrates Poka-Yoke mistake-proofing.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Spatial Audio Canvas (Direct Physical Mental Models)}
+Traditional video grids are a \textbf{Legacy Design} artifact — they map participants into rigid rows and columns that have no spatial meaning. In the real world, we modulate attention and volume by \textit{physically walking closer} to someone. Our Spatial Canvas view directly maps this real-world mental model into the digital interface.
+
+\subsection{How It Works}
+Clicking the new ``Spatial'' tab in the view toggle transforms the grid into a freeform 2D canvas. Each participant becomes a \textbf{draggable circular avatar} floating on a radial-gradient background. The user can:
+\begin{itemize}
+    \item \textbf{Drag any participant} closer or farther from themselves.
+    \item The system simulates \textbf{proximity-based volume adjustment}: closer = louder, farther = softer.
+    \item Participants brought to the front visually overlap others (z-index stacking), reinforcing the physical depth illusion.
+\end{itemize}
+
+This directly satisfies the rubric requirement for \textbf{Interaction Design Paradigms \& Mental Models}: the interface replaces abstract dropdown sliders with a visceral, intuitive spatial metaphor that users already understand from real life.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/16.png}
+    \caption{Spatial Audio Canvas — Demonstrates the Physical Mental Model paradigm: Distance = Volume.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Advanced Fitts's Law: Infinite Edge Panic Mute}
+
+\subsection{Theoretical Foundation}
+Fitts's Law models human motor targeting time as:
+
+\[
+T = a + b \cdot \log_2\left(\frac{D}{W} + 1\right)
+\]
+
+where $D$ is distance to target and $W$ is target width. In most interfaces, $W$ is finite (e.g., a 48px button). However, the \textbf{edges and corners of a physical screen} have a unique property: they have \textbf{infinite effective width} because the mouse cursor physically cannot overshoot past them. This means the Index of Difficulty drops to essentially \textbf{zero}.
+
+\subsection{Implementation}
+We placed an invisible 50×50px trigger zone in the absolute \textbf{bottom-left corner} of the screen. During a meeting, if an emergency occurs (a dog barks, a family member walks in), the user does not need to carefully aim their cursor at the small mic icon. They can \textbf{blindly slam their mouse to the bottom-left corner} and click — the system will instantly force-mute their microphone.
+
+Upon activation, the zone briefly flashes red and a toast confirms: \textbf{``PANIC MUTE activated (Fitts's Law edge target)''}.
+
+This is the most advanced application of Fitts's Law possible in a web application — it exploits the physical constraints of the display hardware itself.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/17.png}
+    \caption{Fitts's Law Panic Mute — Demonstrates infinite-depth edge targets with zero Index of Difficulty.}
+\end{figure}
+
+%% =====================================================================
+%% PART II: MID REVIEW ENHANCEMENTS (THE 5 FEATURES, ENHANCED)
+%% =====================================================================
+\part{Mid Review Enhancements (Enhanced)}
+\label{part:mid-review}
+
+This part revisits and enhances the \textbf{five core usability problems} originally identified during the mid-semester review. Each issue has been significantly deepened with richer HCI mappings, more robust implementations, and explicit connections to classical design laws and cognitive principles.
+
+% -------------------------------------------------------
+\section{Problem 1: Unclear Mute Status}
+
+\subsection{Original Problem}
+In the original Google Meet interface, muting oneself provided minimal visual feedback — only a small icon change on the microphone button. Users frequently spoke while muted without realizing it, leading to communication breakdowns and frustration. The system status was ambiguous, violating fundamental feedback principles.
+
+\subsection{Enhanced Solution: Multi-Modal Mute Feedback (Nielsen \#1 \& Shneiderman \#3)}
+Our redesign implements an assertive, multi-modal feedback system that makes the muted state \textbf{impossible to miss}:
+\begin{itemize}
+    \item \textbf{Animated Red Banner}: Pressing \texttt{Space} or clicking the Mic button to mute triggers a prominent red banner at the top of the screen reading ``You are muted'', accompanied by a pulsing animation.
+    \item \textbf{Border Color Change}: The entire meeting interface border shifts to a subtle red tint while muted, providing persistent peripheral awareness.
+    \item \textbf{Icon State Change}: The microphone icon itself transitions from a clean outline to a struck-through filled icon with the danger color \texttt{\#EA4335}.
+\end{itemize}
+
+\subsubsection{HCI Justification}
+\begin{itemize}
+    \item \textbf{Nielsen's Heuristic \#1 — Visibility of System Status}: The system keeps users informed about its current state through appropriate, timely feedback.
+    \item \textbf{Shneiderman's Rule \#3 — Offer Informative Feedback}: For frequent and minor actions, the response can be modest; for infrequent and major actions, the response should be more substantial. Muting is a critical state change, so the feedback is deliberately assertive.
+    \item \textbf{Redundancy Gain Principle}: By encoding the mute state across three independent visual channels (banner, border, icon), the system ensures the message is received even if the user's attention is focused elsewhere.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/18.png}
+    \caption{Enhanced Mute Feedback System — Multi-modal visual feedback satisfying Nielsen \#1 and Shneiderman \#3.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Problem 2: No Exit Confirmation}
+
+\subsection{Original Problem}
+In the original Google Meet, clicking the ``Leave'' button immediately terminates the meeting session without any confirmation step. Users who accidentally clicked the button — or whose mouse slipped due to motor imprecision — were abruptly disconnected with no recourse. This violates Error Prevention and User Control principles.
+
+\subsection{Enhanced Solution: Destructive Action Confirmation Modal (Shneiderman \#5 \& Nielsen \#3)}
+Our redesign introduces a mandatory \textbf{confirmation modal} that intercepts all destructive ``Leave'' actions:
+\begin{itemize}
+    \item \textbf{Confirmation Dialog}: Clicking ``Leave'' triggers a centered modal asking ``Are you sure you want to leave this meeting?'' with two clear options: ``Stay in Meeting'' (primary, safe action styled as a green pill button) and ``Leave Meeting'' (secondary, destructive action styled with sharp red corners).
+    \item \textbf{Shape Psychology Integration}: The safe action uses a deeply rounded pill shape (border-radius: 9999px) to imply approachability, while the destructive confirmation uses sharp corners to instil friction — directly applying Shape Psychology principles.
+    \item \textbf{Keyboard Trap Prevention}: The modal traps focus within itself, preventing accidental keyboard navigation from triggering the leave action.
+\end{itemize}
+
+\subsubsection{HCI Justification}
+\begin{itemize}
+    \item \textbf{Shneiderman's Rule \#5 — Error Prevention}: The system prevents users from making serious errors by requiring confirmation for irreversible actions.
+    \item \textbf{Nielsen's Heuristic \#3 — User Control \& Freedom}: Users who accidentally trigger the leave action have a clearly marked ``emergency exit'' to return to the meeting without consequence.
+    \item \textbf{Poka-Yoke (Mistake-Proofing)}: The confirmation step makes accidental disconnection physically impossible — the error is prevented at the design level, not merely warned against.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/19.png}
+    \caption{Exit Confirmation Modal — Prevents accidental session termination applying Shneiderman \#5 and Nielsen \#3.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Problem 3: No Keyboard Accelerators}
+
+\subsection{Original Problem}
+The original Google Meet interface was almost entirely mouse-driven. Power users who wanted to quickly mute, toggle camera, or access features had to visually locate and click small button targets every single time. This created a significant efficiency gap between novice and expert users, violating the Flexibility \& Efficiency heuristic.
+
+\subsection{Enhanced Solution: Comprehensive Keyboard Shortcut System (Nielsen \#7 \& Shneiderman \#7)}
+Our redesign implements a full keyboard accelerator layer:
+\begin{itemize}
+    \item \textbf{Primary Shortcuts}: \texttt{Space} to toggle mute, \texttt{C} to toggle camera, \texttt{H} to raise/lower hand, \texttt{E} to open emoji reactions.
+    \item \textbf{Discoverable Shortcuts Menu}: Pressing \texttt{Shift + ?} opens a comprehensive modal overlay listing every available keyboard shortcut with its action, organized by category.
+    \item \textbf{Progressive Disclosure via Learnability}: The system tracks user behavior — if a user clicks the mute button 5 times manually, a contextual tooltip gently suggests: ``Tip: Press Spacebar to mute/unmute faster.'' This bridges the novice-to-expert transition organically.
+\end{itemize}
+
+\subsubsection{HCI Justification}
+\begin{itemize}
+    \item \textbf{Nielsen's Heuristic \#7 — Flexibility \& Efficiency of Use}: Accelerators unseen by the novice user speed up interaction for the expert user, allowing the system to cater to both.
+    \item \textbf{Shneiderman's Rule \#7 — Keep Users in Control}: Keyboard shortcuts empower users with direct, immediate control over core functions without navigating visual hierarchies.
+    \item \textbf{Power Law of Practice}: The progressive tooltip system actively moves users along the learning curve from slow, deliberate mouse clicks to fast, automatic keyboard actions.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/20.png}
+    \caption{Keyboard Shortcuts Menu — Bridges the novice-expert gap satisfying Nielsen \#7 and Shneiderman \#7.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Problem 4: No Internet Quality Pre-check Before Joining}
+
+\subsection{Original Problem}
+In the original Google Meet, users can join a meeting without any verification of their hardware or network readiness. Users frequently discover — only after joining — that their microphone is broken, camera is disabled, or internet connection is too unstable for video conferencing. This leads to embarrassing interruptions and wasted time for all participants.
+
+\subsection{Enhanced Solution: Pre-Meeting System Check (Nielsen \#5 \& Shneiderman \#5)}
+Our redesign implements a comprehensive \textbf{Pre-Meeting System Check} that runs automatically before the user can join:
+\begin{itemize}
+    \item \textbf{Microphone Verification}: The system confirms that an active audio input device is detected and functional.
+    \item \textbf{Camera Verification}: The system validates that the video input device is accessible and streaming.
+    \item \textbf{Network Quality Assessment}: A connection stability check runs against the server, measuring latency and bandwidth to ensure a minimum quality threshold is met.
+    \item \textbf{Visual Feedback}: Each check displays a real-time status indicator (checkmark for pass, warning for degraded, cross for failure) so the user knows exactly what needs attention before entering the meeting.
+\end{itemize}
+
+\subsubsection{HCI Justification}
+\begin{itemize}
+    \item \textbf{Nielsen's Heuristic \#5 — Error Prevention}: Rather than letting users enter a broken session, the system proactively validates the environment. This is ``prevention over cure'' — the highest form of error handling.
+    \item \textbf{Shneiderman's Rule \#5 — Prevent Errors}: The pre-check gate makes it structurally impossible to join with known hardware/network failures, enforcing error prevention at the system architecture level.
+    \item \textbf{Nielsen's Heuristic \#1 — Visibility of System Status}: The real-time status indicators keep the user informed about the readiness of each subsystem, reducing anxiety and building confidence before joining.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/21.png}
+    \caption{Pre-Meeting System Check — Prevents joining with broken hardware, satisfying Nielsen \#5 and Shneiderman \#5.}
+\end{figure}
+
+% -------------------------------------------------------
+\section{Problem 5: No Undo Functionality}
+
+\subsection{Original Problem}
+The original Google Meet interface provides no mechanism to reverse recent actions. If a user accidentally shares their screen, sends a chat message with errors, or toggles the wrong setting, they have no immediate ``undo'' capability. This forces users to be excessively cautious, increasing cognitive load and reducing interaction confidence.
+
+\subsection{Enhanced Solution: Multi-Level Undo \& Reversible Actions (Shneiderman \#3 \& Nielsen \#3)}
+Our redesign introduces undo functionality across multiple interaction layers:
+\begin{itemize}
+    \item \textbf{Chat Message Recall}: After sending a chat message, a brief 5-second ``Undo Send'' toast appears, allowing users to retract the message before it becomes permanent.
+    \item \textbf{Settings Rollback}: Changes made in the Settings panel are not applied immediately — users can preview changes and click ``Apply'' to confirm, or ``Revert'' to undo all modifications. This eliminates the legacy anti-pattern of auto-applying settings without consent.
+    \item \textbf{Action History Stack}: Critical actions (screen share start, breakout room assignments, recording toggles) are logged in a short-term action stack. A persistent ``Undo Last Action'' option is available in the More Options menu for the most recent reversible action.
+\end{itemize}
+
+\subsubsection{HCI Justification}
+\begin{itemize}
+    \item \textbf{Shneiderman's Rule \#3 — Support Internal Locus of Control}: Undo functionality gives users the confidence that their actions are reversible, reducing anxiety and encouraging exploration.
+    \item \textbf{Nielsen's Heuristic \#3 — User Control \& Freedom}: Users need a clearly marked ``emergency exit'' to leave unwanted states without having to go through extended dialogue. Undo provides exactly this capability.
+    \item \textbf{Shneiderman's Rule \#5 — Permit Easy Reversal of Actions}: This rule explicitly mandates that systems should allow users to reverse operations, relieving anxiety since the user knows that errors can be undone.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth,keepaspectratio]{refimages/22.png}
+    \caption{Undo Functionality — Demonstrates multi-level undo supporting Shneiderman \#3 and Nielsen \#3.}
+\end{figure}
+
+%% =====================================================================
+%% CONCLUSION
+%% =====================================================================
+\section{Conclusion}
+This exhaustive, high-fidelity Google Meet redesign breaks away from static mockups. By dynamically connecting interaction states to Cognitive Principles, Classical Laws (Fitts's, Miller's, Vital Few), Persuasive Psychology (Cialdini, Thaler), and advanced Error Prevention paradigms (Poka-Yoke), this build proves that modern Web Usability guidelines can natively support highly complex, empathetic architectural systems.
+
+The \textbf{End Review Enhancements} introduced entirely new design dimensions — from Spatial Audio Canvases and Infinite Edge Panic Mute to Privacy Shields and Persuasion Psychology — while the \textbf{Mid Review Enhancements} elevated the original five usability fixes (Unclear Mute Status, No Exit Confirmation, No Keyboard Accelerators, No Internet Pre-check, and No Undo Functionality) with significantly deeper HCI mappings, richer implementations, and explicit theoretical justifications.
+
+\vspace{1cm}
+
+
+\end{document}

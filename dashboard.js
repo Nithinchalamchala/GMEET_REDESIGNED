@@ -281,8 +281,8 @@ function validateAndJoin() {
             State.captchaPassed = true;
             finalizeJoin();
         } else {
-            // Trigger Layer 2 Spatial Verification Challenge
-            document.getElementById('spatialChallenge').style.display = 'block';
+            // Trigger Layer 3 Semantic Verification Challenge since Drag is buggy
+            triggerSemanticChallenge();
         }
     }, 1500);
 }

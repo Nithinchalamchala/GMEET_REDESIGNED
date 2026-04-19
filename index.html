@@ -91,7 +91,10 @@
     <!-- Header -->
     <header class="meeting-header" role="banner">
         <div class="header-left">
-            <span class="meeting-title">HCI Class Discussion</span>
+            <a href="dashboard.html" class="google-meet-logo" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                <img src="LOGO_CONVERGE.png" alt="Converge Logo" style="width: 28px; height: 28px;">
+                <span class="meeting-title" style="color:var(--text-primary); font-weight: 500;">Converge</span>
+            </a>
             <span class="meeting-timer" id="meetingTimer" aria-live="polite">00:00</span>
         </div>
         <div class="header-center">
@@ -144,7 +147,7 @@
     <!-- Main Content Area -->
     <div class="meeting-content">
         <!-- View Toggle - HCI: Flexibility, User Control -->
-        <div class="view-toggle" id="viewToggle">
+        <div class="view-toggle" id="viewToggle" style="width:auto;">
             <button class="active" id="gridViewBtn" onclick="setView('grid')" title="Grid view">
                 <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z"/></svg>
                 Grid
@@ -152,6 +155,10 @@
             <button id="speakerViewBtn" onclick="setView('speaker')" title="Speaker view">
                 <svg viewBox="0 0 24 24"><path d="M3 3h12v12H3V3zm14 0h4v4h-4V3zm0 6h4v4h-4V9zm0 6h4v4h-4v-4zM3 17h12v4H3v-4z"/></svg>
                 Speaker
+            </button>
+            <button id="spatialViewBtn" onclick="setView('spatial')" title="Spatial Canvas">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Spatial
             </button>
         </div>
 
@@ -490,20 +497,7 @@
                 <span class="ctrl-label">People</span>
             </button>
 
-            <button class="ctrl-btn" id="chatBtn" onclick="toggleChat()" aria-label="Open chat" title="Chat">
-                <span class="ctrl-icon">
-                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-                </span>
-                <span class="ctrl-label">Chat</span>
-            </button>
 
-            <!-- Notes button -->
-            <button class="ctrl-btn" id="notesBtn" onclick="toggleNotes()" aria-label="Meeting notes" title="Meeting notes">
-                <span class="ctrl-icon">
-                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                </span>
-                <span class="ctrl-label">Notes</span>
-            </button>
 
             <div style="position:relative;">
                 <button class="ctrl-btn" id="moreBtn" onclick="toggleMoreMenu()" aria-label="More options" title="More options">
@@ -514,6 +508,19 @@
                 </button>
                 <!-- More Options Dropdown Menu -->
                 <div class="more-menu" id="moreMenu">
+                    <button class="more-menu-item" id="chatBtn" onclick="toggleChat(); closeMoreMenu();">
+                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                        <span>Chat</span>
+                    </button>
+                    <button class="more-menu-item" id="infoBtn" onclick="toggleInfoPanel(); closeMoreMenu();">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        <span>Meeting Info</span>
+                    </button>
+                    <button class="more-menu-item" id="notesBtn" onclick="toggleNotes(); closeMoreMenu();">
+                        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        <span>Meeting Notes</span>
+                    </button>
+                    <div class="menu-divider" style="height:1px; background:rgba(255,255,255,0.1); margin:4px 0;"></div>
                     <button class="more-menu-item" onclick="toggleMore(); closeMoreMenu();">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                         <span>Toggle Recording</span>
@@ -592,7 +599,11 @@
 <div class="modal-overlay settings-modal" id="settingsModal">
     <div class="modal-card">
         <div class="modal-card-header">
-            <h2>Settings</h2>
+            <div>
+                <h2>Settings</h2>
+                <!-- HCI: Navigation Design Guidelines (Breadcrumbs) -->
+                <div class="breadcrumb" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 4px;">Meeting &gt; Settings &gt; <span id="settingBreadcrumb">Audio</span></div>
+            </div>
             <button class="panel-close-btn" onclick="closeSettings()" aria-label="Close settings">
                 <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
@@ -1226,6 +1237,87 @@
         </div>
     </div>
 </div>
+
+<!-- ============================================================
+     MEETING INFO MODAL (INVERTED PYRAMID)
+     HCI: Inverted Pyramid Guideline (Critical info top, secondary below)
+     ============================================================ -->
+<div class="modal-overlay info-modal" id="infoModal">
+    <div class="modal-card">
+        <div class="modal-card-header">
+            <h2>Meeting Details</h2>
+            <button class="panel-close-btn" onclick="closeInfoPanel()" aria-label="Close info">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <div class="modal-card-body">
+            <!-- 1. The MOST IMPORTANT INFO (Top) -->
+            <div class="info-tier primary-info" style="background: rgba(138, 180, 248, 0.1); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                <h4 style="color: var(--blue-primary); margin-bottom: 8px; font-size: 0.9em; text-transform: uppercase;">1. Crucial Information</h4>
+                <div class="info-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-weight: 500;">Joining Info</span>
+                    <span style="font-family: monospace; font-size: 1.1em; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;">meet.google.com/abc-defg-hij</span>
+                </div>
+                <div class="info-row" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 500;">Passcode</span>
+                    <span>HCI-Final-2026</span>
+                </div>
+                <button class="btn-primary" style="width: 100%; margin-top: 12px; padding: 10px;" onclick="navigator.clipboard.writeText('meet.google.com/abc-defg-hij'); alert('Link copied to clipboard');">Copy Joining Info</button>
+            </div>
+            
+            <!-- 2. IMPORTANT BUT NOT CRITICAL INFO (Middle) -->
+            <div class="info-tier secondary-info" style="margin-bottom: 16px; padding: 0 4px;">
+                <h4 style="color: var(--text-secondary); margin-bottom: 8px; font-size: 0.9em; text-transform: uppercase;">2. Secondary Details</h4>
+                <div class="info-row" style="margin-bottom: 8px;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--text-secondary)" style="vertical-align:-3px; margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <strong>Host:</strong> Prof. Sivaselvan
+                </div>
+                <div class="info-row">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--text-secondary)" style="vertical-align:-3px; margin-right:4px;"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+                    <strong>Participants:</strong> <span id="infoPartCount">847</span> currently active
+                </div>
+            </div>
+
+            <!-- 3. BACKGROUND INFO (Bottom) -->
+            <div class="info-tier tertiary-info" style="color: var(--text-tertiary); font-size: 0.9em; padding: 0 4px;">
+                <h4 style="margin-bottom: 4px; font-size: 0.9em; text-transform: uppercase;">3. Background & Rules</h4>
+                <p>This is a formal end-semester review meeting. Please ensure your microphone is muted when not speaking. Sessions are actively recorded for grading purposes.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     ROBUSTNESS (NETWORK RECONNECTING OVERLAY)
+     HCI: Robustness, System Status feedback during faults
+     ============================================================ -->
+<div class="reconnecting-overlay" id="reconnectingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; flex-direction:column; justify-content:center; align-items:center; color:white;">
+    <div class="spinner" style="width:50px; height:50px; border:4px solid rgba(255,255,255,0.3); border-top:4px solid var(--blue-primary); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px;"></div>
+    <h2>Connection unstable...</h2>
+    <p>We're safely reconnecting you. Your video and audio are paused.</p>
+</div>
+
+<!-- ============================================================
+     PRIVACY SHIELD (POKA-YOKE / ASIMOV'S LAWS)
+     HCI: Error Prevention, Mistake Proofing
+     ============================================================ -->
+<div class="privacy-shield-overlay" id="privacyShieldOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; flex-direction:column; justify-content:center; align-items:center;">
+    <div class="shield-card" style="background:var(--bg-primary); border:2px solid var(--yellow-primary); border-radius:12px; padding:32px; max-width:450px; text-align:center;">
+        <div style="font-size:48px; margin-bottom:16px;">🛡️</div>
+        <h2 style="color:var(--text-primary); margin-bottom:12px;">Privacy Shield Active</h2>
+        <p style="color:var(--text-secondary); margin-bottom:24px; line-height:1.5;">Detected 3 unread OS messages. Your notifications have been auto-suppressed to prevent embarrassing leaks while presenting.</p>
+        <div style="display:flex; gap:12px; justify-content:center;">
+            <button class="btn-cancel" onclick="cancelScreenShare()" style="padding:10px 20px; border-radius:8px; border:1px solid var(--border-color); background:transparent; color:var(--text-primary); cursor:pointer;">Cancel Share</button>
+            <button class="btn-primary" onclick="proceedScreenShare()" style="padding:10px 20px; border-radius:8px; border:none; background:var(--blue-primary); color:#202124; font-weight:bold; cursor:pointer;">Acknowledge & Present</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     INFINITE EDGE PANIC MUTE (ADVANCED FITTS'S LAW)
+     HCI: Fitts's Law (Infinite depth target at screen corners)
+     ============================================================ -->
+<div id="fittsPanicZone" title="Panic Mute (Fitts's Law Infinite Edge)" style="position:fixed; bottom:0; left:0; width:50px; height:50px; background:transparent; z-index:999999; cursor:pointer;" onclick="panicMuteTrigger(event)"></div>
 
 <script src="script.js"></script>
 </body>

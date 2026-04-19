@@ -214,6 +214,26 @@ function toggleVideo() {
 //      System Status, Screen Share Feedback
 // ============================
 function toggleScreenShare() {
+  if (state.isSharing) {
+    // If currently sharing, just stop sharing
+    _executeScreenShareToggle();
+  } else {
+    // If about to share, trigger the Privacy Shield (Poka-Yoke) first
+    document.getElementById('privacyShieldOverlay').style.display = 'flex';
+  }
+}
+
+function proceedScreenShare() {
+  document.getElementById('privacyShieldOverlay').style.display = 'none';
+  _executeScreenShareToggle();
+}
+
+function cancelScreenShare() {
+  document.getElementById('privacyShieldOverlay').style.display = 'none';
+  showToast('Screen sharing aborted to protect privacy.');
+}
+
+function _executeScreenShareToggle() {
   state.isSharing = !state.isSharing;
 
   const btn = document.getElementById('shareBtn');
@@ -433,15 +453,87 @@ function setView(view) {
   const grid = document.getElementById('videoGrid');
   const gridBtn = document.getElementById('gridViewBtn');
   const speakerBtn = document.getElementById('speakerViewBtn');
+  const spatialBtn = document.getElementById('spatialViewBtn');
+
+  gridBtn.classList.remove('active');
+  speakerBtn.classList.remove('active');
+  if(spatialBtn) spatialBtn.classList.remove('active');
 
   if (view === 'grid') {
     grid.className = 'video-grid grid-4';
     gridBtn.classList.add('active');
-    speakerBtn.classList.remove('active');
-  } else {
+    disableSpatialMap();
+  } else if (view === 'speaker') {
     grid.className = 'video-grid speaker-view';
-    gridBtn.classList.remove('active');
     speakerBtn.classList.add('active');
+    disableSpatialMap();
+  } else if (view === 'spatial') {
+    grid.className = 'video-grid spatial-view';
+    if(spatialBtn) spatialBtn.classList.add('active');
+    enableSpatialMap();
+  }
+}
+
+let spatialDragLogic = false;
+
+function enableSpatialMap() {
+    if(spatialDragLogic) return;
+    spatialDragLogic = true;
+    const tiles = document.querySelectorAll('.video-tile');
+    
+    // Spread them randomly
+    tiles.forEach((tile, i) => {
+        tile.style.top = (15 + Math.random() * 70) + '%';
+        tile.style.left = (15 + Math.random() * 70) + '%';
+        makeDraggable(tile);
+    });
+}
+
+function disableSpatialMap() {
+    spatialDragLogic = false;
+    const tiles = document.querySelectorAll('.video-tile');
+    tiles.forEach(tile => {
+        tile.style.top = '';
+        tile.style.left = '';
+        tile.onmousedown = null;
+    });
+}
+
+function makeDraggable(elmnt) {
+  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  elmnt.onmousedown = dragMouseDown;
+
+  function dragMouseDown(e) {
+    if(!spatialDragLogic) return;
+    e = e || window.event;
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+    // Bring to front
+    elmnt.style.zIndex = 1000;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    
+    // Simulate volume adjustment based on proximity to center (local user)
+    // Distance = Volume mapping (Mental Models)
+    showToast("Volume adjusted based on spatial distance", 1000);
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+    elmnt.style.zIndex = '';
   }
 }
 
@@ -1652,3 +1744,66 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+// ============================
+// INVERTED PYRAMID (MEETING INFO)
+// ============================
+function toggleInfoPanel() {
+    document.getElementById('infoModal').classList.add('visible');
+}
+
+function closeInfoPanel() {
+    document.getElementById('infoModal').classList.remove('visible');
+}
+
+function copyJoinInfo() {
+    navigator.clipboard.writeText('meet.google.com/abc-defg-hij').then(() => {
+        showToast('Joining info copied to clipboard', false);
+    });
+}
+
+// ============================
+// ROBUSTNESS (NETWORK RECONNECT SIMULATION)
+// HCI: Robustness, Error Recovery
+// ============================
+function simulateNetworkFail() {
+    const overlay = document.getElementById('reconnectingOverlay');
+    if(overlay) {
+        overlay.style.display = 'flex';
+        // Simulate recovery after 4 seconds
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            showToast('Connection restored successfully.', false);
+        }, 4000);
+    }
+}
+
+// Map simulating network fail to a keyboard shortcut for easy demo (Ctrl/Cmd + Alt + N)
+document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.altKey && e.code === 'KeyN') {
+        e.preventDefault();
+        simulateNetworkFail();
+    }
+});
+
+// ============================
+// INFINITE EDGE PANIC MUTE (FITTS'S LAW)
+// HCI: Fitts's Law — screen corners have infinite depth,
+// making the Index of Difficulty effectively zero.
+// ============================
+function panicMuteTrigger(e) {
+    e.stopPropagation();
+    // Force mute if not already muted
+    if (!state.isMuted) {
+        toggleMute();
+    }
+    showToast('🔇 PANIC MUTE activated (Fitts\'s Law edge target)');
+    // Flash the zone briefly so user knows it worked
+    const zone = document.getElementById('fittsPanicZone');
+    if (zone) {
+        zone.style.background = 'rgba(234, 67, 53, 0.4)';
+        zone.style.borderRadius = '0 12px 0 0';
+        setTimeout(() => {
+            zone.style.background = 'transparent';
+        }, 600);
+    }
+}

@@ -24,17 +24,16 @@
 
 ## 🎯 Overview
 
-This project is a **fully functional interactive prototype** of Google Meet, redesigned using Human-Computer Interaction (HCI) principles. It demonstrates practical application of:
+This project is a **fully functional interactive prototype** of Google Meet, redesigned using Human-Computer Interaction (HCI) principles. It was specifically engineered to demonstrate all classical and modern evaluation criteria from the End Semester Problem Statement, including:
 
-- **Shneiderman's 8 Golden Rules** of Interface Design
-- **Nielsen's 10 Usability Heuristics**
-- **Fitts's Law**, **Hick's Law**, **Miller's Law**
-- **Gestalt Laws of Perception**
-- **Norman's Design of Everyday Things** (Affordance, Feedback, Mapping)
-- **Persuasive Design**, **Nudge Theory**, **Ethical Design**
-- **Cognitive Psychology** (Attention Management, Signal-to-Noise Ratio)
-- **CAPTCHA Design** (Multi-Modal Security Verification)
-- **Legacy Design Abandonment** (Modern interaction patterns)
+- **Shneiderman's 8 Golden Rules** & **Nielsen's 10 Usability Heuristics**
+- **Classical Design Laws**: Vital Few (80-20 rule), Law of Learning, Mental Models, Closure, Learnability, Flexibility, Robustness, Asimov's Laws.
+- **Cognitive Principles**: Primality, Recency, Serial Position Effect, Inverted Pyramid.
+- **Gestalt Laws of Perception** & **Universal Design** (Accessibility)
+- **User Support Systems Principles** & **Navigation Design Guidelines**
+- **Interaction Design Paradigms** & **Persuasion Psychology** (Cialdini)
+- **Visual Design Rules**: Balance, Scale, Dominance, Shape & Color Psychology.
+- **Web Usability Guidelines** & **Legacy Design Abandonment**
 
 **Tech Stack:** Vanilla HTML5 + CSS3 + JavaScript (no frameworks, no dependencies)
 
@@ -395,7 +394,10 @@ The dashboard implements several additional HCI concepts:
 | **Meeting Notes** | #4 | #7 | | | ✓ | | | External Memory |
 | **Focus Mode** | | #3 | | | | | | Attention, Tesler |
 | **Break Reminder** | | | | | | | | Persuasive, Nudge |
-
+| **Meeting Info Panel** | | | | | | | | Inverted Pyramid |
+| **Reconnecting State** | #5 | | | | | | | Robustness, Asimov |
+| **Shape Psychology** | | | | | | | Affordance | Warnings/Pills |
+| **Breadcrumbs** | #1 | | | | | | | Navigation Design |
 ### Metrics Demonstrated
 
 | Metric | Before (Original) | After (Redesign) |

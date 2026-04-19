@@ -362,7 +362,7 @@ kbd {
   color: #202124;
   font-size: 15px;
   font-weight: 500;
-  border-radius: var(--radius-lg);
+  border-radius: 9999px; /* HCI: Shape Psychology (Pill shape for safe primary actions) */
   transition: var(--transition-fast);
 }
 
@@ -592,6 +592,30 @@ kbd {
   grid-template-columns: 1fr 200px;
   grid-template-rows: 1fr;
   gap: 8px;
+}
+
+/* Spatial View (Mental Models) */
+.video-grid.spatial-view {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle, rgba(66, 133, 244, 0.08) 0%, transparent 70%);
+}
+.video-grid.spatial-view .video-tile {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  transition: box-shadow 0.2s;
+  cursor: grab;
+  transform: translate(-50%, -50%);
+}
+.video-grid.spatial-view .video-tile:active {
+  cursor: grabbing;
+}
+.video-grid.spatial-view .tile-controls {
+  bottom: -30px;
+  opacity: 1;
 }
 
 .video-grid.speaker-view .video-tile:first-child {
@@ -1173,7 +1197,7 @@ kbd {
   align-items: center;
   gap: 4px;
   padding: 10px 14px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg); /* HCI: Shape Psychology (Soft corners for approachability) */
   transition: var(--transition-fast);
   position: relative;
   min-width: 56px;
@@ -1309,6 +1333,7 @@ kbd {
   min-width: 64px;
   padding: 12px 20px;
   margin-left: 8px;
+  border-radius: var(--radius-sm); /* HCI: Shape Psychology (Sharper corners for alerts/destructive actions) */
 }
 
 .ctrl-btn.leave-btn:hover {

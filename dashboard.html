@@ -18,13 +18,10 @@
 <div class="role-screen" id="roleScreen">
     <div class="role-card">
         <div class="role-header">
-            <div class="google-meet-logo">
-                <svg viewBox="0 0 24 24" width="36" height="36">
-                    <path fill="#4285F4" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-                    <path fill="#fff" d="M17 10.5V7c0-.55-.45-1-1-1H8c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h8c.55 0 1-.45 1-1v-3.5l3 3v-9l-3 3z"/>
-                </svg>
-                <span>Google Meet Next</span>
-            </div>
+            <a href="dashboard.html" class="google-meet-logo" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                <img src="LOGO_CONVERGE.png" alt="Converge Logo" style="width: 36px; height: 36px;">
+                <span style="color:var(--text-primary); font-size: 22px; font-weight: 500;">Converge</span>
+            </a>
             <h1>Welcome! How will you use Meet today?</h1>
             <p class="role-subtitle">We'll personalize your experience based on your role.</p>
         </div>
@@ -273,6 +270,10 @@
                 <!-- Adaptive Verification Container (Layered Security) -->
                 <div class="adaptive-verification-section" id="adaptiveVerificationContainer">
                     <button class="btn-primary auth-submit-btn" id="joinMeetingBtn" onclick="validateAndJoin()">Join Meeting</button>
+                    <div style="text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--success-green)"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                        <span>Trusted by 5M+ users worldwide. End-to-end encrypted.</span>
+                    </div>
                     
                     <div id="authErrorMsg" class="error-msg"></div>
 
