@@ -136,11 +136,15 @@
             <div class="dot" data-tip="3"></div>
         </div>
 
-        <div class="onboarding-actions">
-            <!-- Directly join skips dashboard and goes to meeting -->
-            <button class="btn-primary-action" onclick="window.location.href='meeting.html'">Directly Join</button>
-            <button class="btn-primary-action" style="background: var(--surface-2); color: var(--text-primary);" onclick="skipOnboardingWizard()">Skip to Dashboard</button>
-            <button class="btn-secondary" id="onboardingNextBtn" onclick="nextOnboardingTip()">See next tip →</button>
+        <div class="onboarding-actions" style="flex-direction: column; gap: 16px; align-items: stretch;">
+            <!-- Primary Action: Skip to Dashboard -->
+            <button class="btn-primary-action" style="width: 100%; padding: 14px; font-size: 16px;" onclick="skipOnboardingWizard()">Skip to Dashboard</button>
+            
+            <!-- Secondary Actions: Less contrast, next line -->
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+                <button class="btn-secondary" onclick="window.location.href='meeting.html'">Directly Join</button>
+                <button class="btn-secondary" id="onboardingNextBtn" onclick="nextOnboardingTip()">See next tip →</button>
+            </div>
         </div>
 
         <!-- Commitment progress -->
